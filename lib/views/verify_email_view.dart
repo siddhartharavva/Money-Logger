@@ -38,6 +38,22 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
 
             ),
           ),
+          TextButton(
+                style: TextButton.styleFrom(
+                 backgroundColor: const Color.fromARGB(255, 79, 79, 79),   
+                ),
+              onPressed: () {
+                 Navigator.of(context).pushNamedAndRemoveUntil(
+                '/homepage',
+                (route) => false,
+              );
+            }, 
+            child: const Text("Login after verification",
+            style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)
+            ), 
+
+            ),
+          ),
         ],
       ),
     );

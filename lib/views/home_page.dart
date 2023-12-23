@@ -13,8 +13,9 @@ class _HomeViewState extends State<HomeView> {
     return const Scaffold(backgroundColor: Colors.black,
       body:Center(
        child: Text("Money Logger",
-         textScaler: TextScaler.linear(1.5),
-         style: TextStyle(color: Colors.white), 
+         textScaler: TextScaler.linear(5),
+         style: TextStyle(color: Colors.white,
+         fontWeight: FontWeight.w900), 
 
        ),
       ),
