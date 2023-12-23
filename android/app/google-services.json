@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "491621337253",
+    "project_id": "money-logger-224",
+    "storage_bucket": "money-logger-224.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491621337253:android:af96ae1703f6d88488a54c",
+        "android_client_info": {
+          "package_name": "com.example.money_logger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5YcRVbsoUuUHAhVGA9sHnO4lpJD0p0mw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
