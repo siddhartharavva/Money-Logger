@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:money_logger/firebase_options.dart';
+import 'package:money_logger/views/Home_Page.dart';
 import 'package:money_logger/views/login_view.dart';
 import 'package:money_logger/views/register_view.dart';
 import 'package:money_logger/views/verify_email_view.dart';
@@ -36,20 +37,35 @@ class HomePage extends StatelessWidget {
              final user = FirebaseAuth.instance.currentUser;
              if(user != null){
               if(user.emailVerified){
-                print("email is verified");
+                return const LogView();
               }else{
                 return const VerifyEmailView();
               }
              }else{
                 return const LoginView();
              }
-            return const Text("Done");
             default:
-              return const Text("Loading");
+              return const HomeView();
           }
         },
       );
   }
 }
 
+class LogView extends StatefulWidget {
+  const LogView({super.key});
 
+  @override
+  State<LogView> createState() => _LogViewState();
+}
+
+class _LogViewState extends State<LogView> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(backgroundColor: Colors.white,
+      appBar: AppBar(backgroundColor: Colors.black,
+        title:const Text("Page")
+      )
+    );
+  }
+}
