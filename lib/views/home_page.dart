@@ -12,9 +12,9 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return const Scaffold(backgroundColor: Colors.black,
       body:Center(
-       child: Text("Money Logger",
+       child: Text("Monfdfdey Logger",
          textScaler: TextScaler.linear(5),
-         style: TextStyle(color: Colors.white,
+         style: TextStyle(color: Color.fromARGB(255, 218, 39, 39),
          fontWeight: FontWeight.w900), 
 
        ),

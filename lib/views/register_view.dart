@@ -68,6 +68,10 @@ class _RegisterViewState extends State<RegisterView> {
                     email: email,
                     password: password,
                     );
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/verify',
+                  (route) => false,
+                );
                     print(userCredential);
                 }on FirebaseAuthException catch(e){
                   if(e.code == "weak-password"){
@@ -91,7 +95,10 @@ class _RegisterViewState extends State<RegisterView> {
                 '/login',
                 (route) => false,
               );
-              }, child: const Text("Already registered?.. login here")),
+              }, child: const Text("Already registered?.. login here",
+                 style: TextStyle(color: Colors.black), 
+                ),
+              ),
             ],
           ),
     );

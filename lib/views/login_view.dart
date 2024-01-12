@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer'as devtools show log;
+
 
 
 class LoginView extends StatefulWidget {
@@ -69,13 +71,17 @@ late final TextEditingController _email;
                     email: email,
                     password: password,
                     );
-                    print(userCredential);
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/Ui',
+                        (route) => false,
+                      );
+                    
+                    devtools.log(userCredential.toString());
                 }on FirebaseAuthException catch(e){ 
                   if(e.code =="invalid-credential"){
-                    print("Invalid credentials");
-                  }
+                    devtools.log("invalid credentials");                  }
                 }
-                
+                  
                 },
                   child: const Text("Login",
                   style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)), 
@@ -86,7 +92,10 @@ late final TextEditingController _email;
                   '/register',
                   (route) => false,
                 );
-              }, child: const  Text("Not registered yet?..Register here"))
+              }, child: const  Text("Not registered yet?..Register here",
+               style: TextStyle(color: Colors.black), 
+                ),        
+              ),
             ],
           ),
     );

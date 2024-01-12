@@ -9,6 +9,7 @@ class VerifyEmailView extends StatefulWidget {
   State<VerifyEmailView> createState() => _VerifyEmailViewState();
 }
 
+
 class _VerifyEmailViewState extends State<VerifyEmailView> {
   @override
   Widget build(BuildContext context) {
@@ -31,6 +32,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
               onPressed: () async {
               final user = FirebaseAuth.instance.currentUser;
               await user?.sendEmailVerification();
+              
             }, 
             child: const Text("Verify",
             style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)
@@ -48,7 +50,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                 (route) => false,
               );
             }, 
-            child: const Text("Login after verification",
+            child: const Text("Click twice after verification",
             style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)
             ), 
 
