@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer'as devtools show log;
 
+import 'package:money_logger/constants/routes.dart';
+
 
 
 class LoginView extends StatefulWidget {
@@ -89,7 +91,7 @@ late final TextEditingController _email;
               ),
               TextButton(onPressed: (){
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/register',
+                  RegisterRoute,
                   (route) => false,
                 );
               }, child: const  Text("Not registered yet?..Register here",

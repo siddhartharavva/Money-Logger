@@ -6,6 +6,7 @@ import 'package:money_logger/views/home_page.dart';
 import 'package:money_logger/views/login_view.dart';
 import 'package:money_logger/views/register_view.dart';
 import 'package:money_logger/views/verify_email_view.dart';
+import 'package:money_logger/constants/routes.dart';
 import 'dart:developer'as devtools show log;
 void main() {
   
@@ -17,12 +18,13 @@ void main() {
       ),
       home: const HomePage(),
       routes: {
-        '/login':(context)=> const LoginView(),
-        '/register' : (context) => const RegisterView(),
-        '/homepage' : (context) => const HomePage(),
-        '/Ui':(context) => const LogView(),
-        '/verify':(context) => const VerifyEmailView(),
+        LoginRoute : (context)=> const LoginView(),
+        RegisterRoute : (context) => const RegisterView(),
+        HomeRoute : (context) => const HomePage(),
+        LogRoute : (context) => const LogView(),
+        VerifyEmailRoute : (context) => const VerifyEmailView(),
       },
+
 
     ),
   );
@@ -86,13 +88,13 @@ class _LogViewState extends State<LogView> {
         actions: [ 
             PopupMenuButton<MenuAction>(
             onSelected: (value) async {
-              switch (value) {
+              switch (value) { 
                 case MenuAction.logout:
                   final shouldLogout   = await showlogOutDialog(context);
                   if(shouldLogout){
                     await FirebaseAuth.instance.signOut();
                      await Navigator.of(context).pushNamedAndRemoveUntil(
-                      '/login',
+                      LoginRoute,
                        (_) => false,
                     );
                   }
