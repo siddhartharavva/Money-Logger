@@ -1,9 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:money_logger/constants/routes.dart';
+import 'package:money_logger/services/auth/auth_exceptions.dart';
+import 'package:money_logger/services/auth/auth_service.dart';
 import 'package:money_logger/utilities/Show_Error_dialog.dart';
 
 
@@ -71,12 +70,13 @@ late final TextEditingController _email;
                   final email = _email.text;
                   final password = _password.text;
                  try{
-                    await  FirebaseAuth.instance.signInWithEmailAndPassword(
-                    email: email,
-                    password: password,
+                    await AuthService.firebase().logIn(
+                      email: email, 
+                      password: password,
                     );
-                    final user = FirebaseAuth.instance.currentUser;
-                    if(user?.emailVerified??false){
+                 
+                    final user = AuthService.firebase().currentUser;
+                    if(user?.isEmailVerifed??false){
                          Navigator.of(context).pushNamedAndRemoveUntil(
                         logRoute,
                         (route) => false,
@@ -90,24 +90,18 @@ late final TextEditingController _email;
                       );
 
                     }
-                    
-                   
-                    
-                } on PlatformException{
-                  await showErrorDialog(
+
+                }on GenericAuthException{
+                    await showErrorDialog(
                     context,
-                    'Invalid credentials',
-                  );
-                } on FirebaseAuthException{
-                  await showErrorDialog(
-                    context,
-                    'Invalid credentials',
+                    'Authentication Error',
                     );
-                } catch (e) {
+                } 
+                on PlatformException{
                   await showErrorDialog(
                     context,
-                    e.toString(),
-                  );                  
+                    'Invalid credentials',
+                  );              
                 }
                   
                 },

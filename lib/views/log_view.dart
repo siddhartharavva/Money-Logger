@@ -1,11 +1,11 @@
 
   // ignore_for_file: use_build_context_synchronously
-  
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:money_logger/constants/routes.dart';
 import 'package:money_logger/enums/menu_action.dart';
 import 'dart:developer'as devtools show log;
+
+import 'package:money_logger/services/auth/auth_service.dart';
 
 class LogView extends StatefulWidget {
   const LogView({super.key});
@@ -29,7 +29,7 @@ class _LogViewState extends State<LogView> {
                 case MenuAction.logout:
                   final shouldLogout   = await showlogOutDialog(context);
                   if(shouldLogout){
-                    await FirebaseAuth.instance.signOut();
+                    await AuthService.firebase().logOut();
                      await Navigator.of(context).pushNamedAndRemoveUntil(
                       loginRoute,
                        (_) => false,
