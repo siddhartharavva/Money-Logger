@@ -48,11 +48,11 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                 ),
               onPressed: () {
                  Navigator.of(context).pushNamedAndRemoveUntil(
-                  homeRoute,
+                  loginRoute,
                 (route) => false,
               );
             }, 
-            child: const Text("Click twice after verification",
+            child: const Text("re-enter the details to login",
             style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)
             ), 
 

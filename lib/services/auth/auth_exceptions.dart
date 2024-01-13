@@ -1,14 +1,18 @@
 //Login Exceptions
 class InvalidCredentialsException implements Exception{}
 
-//class PlatformsException implements Exception{}
+class UserNotFoundException implements Exception{}
 
-class FirebaseAuthhException implements Exception{}
+class WrongPasswordException implements Exception{}
+
+
 
 // register Exceptions
 class WeakPasswordException implements Exception{}
 
 class EmailAlreadyInUseException implements Exception{}
+
+class EmailInvalidException implements Exception{}
 
 //generic exceptions
 

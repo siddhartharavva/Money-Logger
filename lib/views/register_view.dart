@@ -85,10 +85,14 @@ class _RegisterViewState extends State<RegisterView> {
                   await showErrorDialog(context,
                    "email entered already in use",
                   );    
-                }on GenericAuthException{
+                }on EmailInvalidException{
                   await showErrorDialog(context,
-                   "Registering error",
+                   "Email address is invalid",
                   );    
+                 }on GenericAuthException{
+                  await showErrorDialog(context,
+                   "Registration error",
+                  );
                  }      
                 },
           

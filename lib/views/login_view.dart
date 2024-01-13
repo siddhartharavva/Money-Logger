@@ -91,18 +91,22 @@ late final TextEditingController _email;
 
                     }
 
+                }on UserNotFoundException{
+                    await showErrorDialog(
+                    context,
+                    'User is not found',
+                    );
+                }on WrongPasswordException{
+                    await showErrorDialog(
+                    context,
+                    'Wrong password',
+                    );
                 }on GenericAuthException{
                     await showErrorDialog(
                     context,
                     'Authentication Error',
                     );
                 } 
-                on PlatformException{
-                  await showErrorDialog(
-                    context,
-                    'Invalid credentials',
-                  );              
-                }
                   
                 },
                   child: const Text("Login",
