@@ -36,7 +36,9 @@ class FirebaseAuthProvider implements AuthProvider {
         throw WeakPasswordException();
       } else if (e.code == 'email-already-in-use') {
         throw EmailAlreadyInUseException();
-      } else {
+      } else if(e.code == 'invalid-email') {
+        throw EmailInvalidException();
+      }else{
         throw GenericAuthException();
       }
     } catch (_) {
@@ -70,9 +72,20 @@ class FirebaseAuthProvider implements AuthProvider {
       } else {
         throw UserNotLoggedInException();
       }
-    } catch (_) {
+    }on FirebaseAuthException catch(e){
+      if(e.code =='user-not-found'){
+        throw UserNotFoundException();
+      }else if(e.code == 'wrong-password'){
+        throw WrongPasswordException();
+      }else{
+        throw GenericAuthException();
+      }
+    }catch (_){
       throw GenericAuthException();
     }
+    
+    
+
   }
 
   @override
