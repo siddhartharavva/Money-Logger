@@ -63,6 +63,10 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                 ),
               onPressed: () async {
                  await FirebaseAuth.instance.signOut();
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                  RegisterRoute,
+                  (route) => false,
+                 );
             }, 
             child: const Text("Restart",
             style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)

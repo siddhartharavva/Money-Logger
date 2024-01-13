@@ -73,10 +73,23 @@ late final TextEditingController _email;
                     email: email,
                     password: password,
                     );
-                      Navigator.of(context).pushNamedAndRemoveUntil(
+                    final user = FirebaseAuth.instance.currentUser;
+                    if(user?.emailVerified??false){
+                         Navigator.of(context).pushNamedAndRemoveUntil(
                         LogRoute,
                         (route) => false,
                       );
+
+                    }else{
+                      showErrorDialog(context, "Verify Your email");
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                        VerifyEmailRoute,
+                        (route) => false,
+                      );
+
+                    }
+                    
+                   
                     
                 } on PlatformException{
                   await showErrorDialog(
