@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer'as devtools show log;
-
+import 'package:flutter/services.dart';
 import 'package:money_logger/constants/routes.dart';
+import 'package:money_logger/utilities/Show_Error_dialog.dart';
 
 
 
@@ -69,19 +69,30 @@ late final TextEditingController _email;
                   final email = _email.text;
                   final password = _password.text;
                  try{
-                  final userCredential = await  FirebaseAuth.instance.signInWithEmailAndPassword(
+                    await  FirebaseAuth.instance.signInWithEmailAndPassword(
                     email: email,
                     password: password,
                     );
                       Navigator.of(context).pushNamedAndRemoveUntil(
-                        '/Ui',
+                        LogRoute,
                         (route) => false,
                       );
                     
-                    devtools.log(userCredential.toString());
-                }on FirebaseAuthException catch(e){ 
-                  if(e.code =="invalid-credential"){
-                    devtools.log("invalid credentials");                  }
+                } on PlatformException{
+                  await showErrorDialog(
+                    context,
+                    'Invalid credentials',
+                  );
+                } on FirebaseAuthException{
+                  await showErrorDialog(
+                    context,
+                    'Invalid credentials',
+                    );
+                } catch (e) {
+                  await showErrorDialog(
+                    context,
+                    e.toString(),
+                  );                  
                 }
                   
                 },
@@ -103,3 +114,4 @@ late final TextEditingController _email;
     );
   }
 }
+

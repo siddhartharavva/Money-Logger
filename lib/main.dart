@@ -8,6 +8,7 @@ import 'package:money_logger/views/register_view.dart';
 import 'package:money_logger/views/verify_email_view.dart';
 import 'package:money_logger/constants/routes.dart';
 import 'dart:developer'as devtools show log;
+
 void main() {
   
   WidgetsFlutterBinding.ensureInitialized();
