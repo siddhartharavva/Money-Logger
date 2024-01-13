@@ -23,7 +23,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
       ),
       body: Column(
           children: [
-            const Text("Verify your email address",
+            const Text("Verificaiton email has been sent,Open the email to verify your account",
             textScaler: TextScaler.linear(2.5),
             ),
             TextButton(
@@ -35,7 +35,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
               await user?.sendEmailVerification();
               
             }, 
-            child: const Text("Verify",
+            child: const Text("Resend Verification email",
             style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)
             ), 
 
@@ -57,6 +57,19 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
 
             ),
           ),
+          TextButton(
+                style: TextButton.styleFrom(
+                 backgroundColor: const Color.fromARGB(255, 79, 79, 79),   
+                ),
+              onPressed: () async {
+                 await FirebaseAuth.instance.signOut();
+            }, 
+            child: const Text("Restart",
+            style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)
+            ), 
+
+            ),
+          ),  
         ],
       ),
     );
