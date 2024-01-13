@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -76,14 +78,14 @@ late final TextEditingController _email;
                     final user = FirebaseAuth.instance.currentUser;
                     if(user?.emailVerified??false){
                          Navigator.of(context).pushNamedAndRemoveUntil(
-                        LogRoute,
+                        logRoute,
                         (route) => false,
                       );
 
                     }else{
                       showErrorDialog(context, "Verify Your email");
                           Navigator.of(context).pushNamedAndRemoveUntil(
-                        VerifyEmailRoute,
+                        verifyEmailRoute,
                         (route) => false,
                       );
 
@@ -115,7 +117,7 @@ late final TextEditingController _email;
               ),
               TextButton(onPressed: (){
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                  RegisterRoute,
+                  registerRoute,
                   (route) => false,
                 );
               }, child: const  Text("Not registered yet?..Register here",
