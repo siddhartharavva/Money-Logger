@@ -27,7 +27,7 @@ void main() {
 
 
     ),
-  );
+  ); 
 }
 
 class HomePage extends StatelessWidget {
@@ -46,7 +46,7 @@ class HomePage extends StatelessWidget {
              
              if(user != null){
               
-              if(user.isEmailVerifed ){
+              if(user.isEmailVerified ){
                 return const LogView();
               }else{
                 devtools.log(user.toString());

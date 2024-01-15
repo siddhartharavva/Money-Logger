@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_import, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:money_logger/constants/routes.dart';
@@ -76,7 +78,7 @@ late final TextEditingController _email;
                     );
                  
                     final user = AuthService.firebase().currentUser;
-                    if(user?.isEmailVerifed??false){
+                    if(user?.isEmailVerified??false){
                          Navigator.of(context).pushNamedAndRemoveUntil(
                         logRoute,
                         (route) => false,
