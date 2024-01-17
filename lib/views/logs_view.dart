@@ -6,15 +6,31 @@ import 'package:money_logger/enums/menu_action.dart';
 import 'dart:developer'as devtools show log;
 
 import 'package:money_logger/services/auth/auth_service.dart';
+import 'package:money_logger/services/crud/log_service.dart';
 
-class LogView extends StatefulWidget {
-  const LogView({super.key});
+class LogsView extends StatefulWidget {
+  const LogsView({super.key});
 
   @override
-  State<LogView> createState() => _LogViewState();
+  State<LogsView> createState() => _LogsViewState();
 }
 
-class _LogViewState extends State<LogView> {
+class _LogsViewState extends State<LogsView> {
+
+  late final LogsService _logsService;
+  String get userEmail => AuthService.firebase().currentUser!.email!;
+  @override
+  void initState(){
+    _logsService = LogsService();
+    super.initState();
+  }
+  @override
+  void dispose(){
+    _logsService = LogsService();
+    _logsService.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(backgroundColor: Colors.white,
@@ -49,7 +65,21 @@ class _LogViewState extends State<LogView> {
           },)
         ],
       ),
-      body: const Text("Hello world"),
+      body: FutureBuilder(
+        future:_logsService.getOrCreateUser(email: userEmail),
+        builder:(context,snapshot) {
+          switch(snapshot.connectionState){
+            case ConnectionState.done:
+              return const Text('Your notes will appear here');
+
+            default:
+              return const CircularProgressIndicator();
+            
+          }
+        
+
+        },
+      ),
     );
   }
 }

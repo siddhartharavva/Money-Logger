@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:money_logger/services/crud/crud_exceptions.dart';
 import 'package:sqflite/sqflite.dart';
@@ -8,11 +10,37 @@ import 'package:path/path.dart' show join;
 
 class LogsService {
   Database? _db;
+
+  List<DatabaseLog> _logs = [];
+
+  final _logsStreamController = 
+      StreamController<List<DatabaseLog>>.broadcast();
+  Stream<List<DatabaseLog>> get allLogs => _logsStreamController.stream;
+  Future<DatabaseUser> getOrCreateUser({required String email}) async{
+    
+    try{
+      
+      final user = await getUser(email: email);
+      return user;
+    }on CouldnotfindUser{
+      final createdUser = await createUser(email: email);
+      return createdUser;
+    }catch (e){
+      rethrow;
+    }
+  }
+
+  Future<void> _cachedLogs() async{
+    final allLogs  = await getAllLogs();
+    _logs = allLogs.toList();
+    _logsStreamController.add(_logs);
+  }
   
   Future<DatabaseLog> updateLog({
     required DatabaseLog log,
     required String text
     }) async {
+       await _ensureDbIsOpen();
        final db = _getDatabaseOrThrow();
 
        await getLog(id: log.id);
@@ -24,12 +52,17 @@ class LogsService {
       if(updatesCount == 0){
         throw CouldNotUpdateLog();
       }else{
-        return await getLog(id: log.id);
+        final updatedLog  = await getLog(id: log.id);
+        _logs.removeWhere((log) => log.id == updatedLog.id);
+        _logs.add(updatedLog);
+        _logsStreamController.add(_logs);
+        return updatedLog;
       }
 
     }
 
-  Future<Iterable<DatabaseLog>> getAllLogs({required int id}) async{
+  Future<Iterable<DatabaseLog>> getAllLogs() async{
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final logs = await db.query(logsTable);
     return logs.map((logRow) => DatabaseLog.fromRow(logRow));
@@ -37,6 +70,7 @@ class LogsService {
   }
 
   Future<DatabaseLog> getLog({required int id}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final logs = await db.query(
       logsTable,
@@ -48,17 +82,27 @@ class LogsService {
     if(logs.isEmpty){
       throw CouldNotFindLog();
     }else{
-      return DatabaseLog.fromRow(logs.first);
+      
+      final log = DatabaseLog.fromRow(logs.first);
+      _logs.removeWhere((log) => log.id == id);
+      _logs.add(log);
+      _logsStreamController.add(_logs);
+      return log;
     }
 
   }
   
   Future<int> deleteAllLogs() async{
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
-    return await db.delete(logsTable);
+    final numberOfDeletions  = await db.delete(logsTable);
+    _logs = [];
+    _logsStreamController.add(_logs);
+    return numberOfDeletions;
   }
   
   Future<void> deleteLog({required int id}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final deletedCount = await db.delete(
       logsTable,
@@ -68,10 +112,14 @@ class LogsService {
       );
       if(deletedCount != 1){
       throw CouldNotDeleteNote();
+    }else{
+      _logs.removeWhere((log) => log.id == id);
+      _logsStreamController.add(_logs);
     }
 }
 
   Future<DatabaseLog> createLog({required DatabaseUser owner}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
     // make sure owner    exists in the databse with the correct id
@@ -94,11 +142,17 @@ class LogsService {
       userId: owner.id, 
       isSyncedWithCloud: true,
       );
+      
+      
+    _logs.add(log);
+    _logsStreamController.add(_logs);
+
       return log;
 
   }
   
   Future<DatabaseUser> getUser({required String email}) async{
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final results = await db.query(
       userTable,
@@ -115,6 +169,8 @@ class LogsService {
   }
   
   Future<DatabaseUser> createUser({required String email}) async{
+    await _ensureDbIsOpen();
+
     final db = _getDatabaseOrThrow();
     final results = await db.query(
       userTable, 
@@ -139,6 +195,7 @@ class LogsService {
   } 
 
   Future<void> deleteUser({required String email}) async {
+    await _ensureDbIsOpen();
   final db = _getDatabaseOrThrow();
   final deletedCount = await db.delete(
     userTable,
@@ -160,21 +217,22 @@ class LogsService {
     }
   }
 
+
   Future<void> open() async {
-    if(_db != null){
-        throw DatabaseAlreadyOpenException();
+    if (_db != null) {
+      throw DatabaseAlreadyOpenException();
     }
-    try{
-      final logsPath = await getApplicationSupportDirectory(); 
-      final dbPath = join(logsPath.path, dbName);
+    try {
+      final docsPath = await getApplicationDocumentsDirectory();
+      final dbPath = join(docsPath.path, dbName);
       final db = await openDatabase(dbPath);
       _db = db;
-    //Creates a Usertable if it is not there
-    await db.execute(createUserTable);
-    //Creates a Logstable if it is not there
-    await db.execute(createLogsTable);
-
-    }on MissingPlatformDirectoryException {
+      // create the user table
+      await db.execute(createUserTable);
+      // create note table
+      await db.execute(createLogsTable);
+      await _cachedLogs();
+    } on MissingPlatformDirectoryException {
       throw UnableToGetDocumentsDirectory();
     }
   }
@@ -185,13 +243,19 @@ class LogsService {
     if(db == null){
       throw DatabaseIsNotOpen();
     }else{
-      await db.close;
+       db.close;
       _db = null;
     }
 
 }
-
-
+  Future<void> _ensureDbIsOpen()async{
+    try{
+      await open();
+    }on DatabaseAlreadyOpenException{
+      //empty
+    }
+  
+  }
 }
 @immutable
 class DatabaseUser{
@@ -255,20 +319,16 @@ const emailColumn = 'email';
 const userIdColumn = 'user_id';
 const textColumn = 'text';
 const isSyncedWithCloudColumn = 'is_synced_with_cloud';
-
- const createUserTable = '''CREATE TABLE IF NOT EXISTS "user" (
-	                                  "id"	INTEGER NOT NULL,
-                                    "email"	TEXT NOT NULL UNIQUE,
-                                    PRIMARY KEY("id" AUTOINCREMENT)
-                                  );
-      '''; 
-  const createLogsTable = '''CREATE TABLE IF NOT EXISTS "logs" (
-                                    "id"	INTEGER NOT NULL,
-                                    "user_id"	INTEGER NOT NULL,
-                                    "text"	TEXT,
-                                    "is_synced_with_cloud"	INTEGER NOT NULL DEFAULT 0,
-                                    PRIMARY KEY("id"),
-                                    FOREIGN KEY("user_id") REFERENCES "user"("id")
-                                  );
-      
-      ''';      
+const createUserTable = '''CREATE TABLE IF NOT EXISTS "user" (
+        "id"	INTEGER NOT NULL,
+        "email"	TEXT NOT NULL UNIQUE,
+        PRIMARY KEY("id" AUTOINCREMENT)
+      );''';
+const createLogsTable = '''CREATE TABLE IF NOT EXISTS "log" (
+        "id"	INTEGER NOT NULL,
+        "user_id"	INTEGER NOT NULL,
+        "text"	TEXT,
+        "is_synced_with_cloud"	INTEGER NOT NULL DEFAULT 0,
+        FOREIGN KEY("user_id") REFERENCES "user"("id"),
+        PRIMARY KEY("id" AUTOINCREMENT)
+      );''';
