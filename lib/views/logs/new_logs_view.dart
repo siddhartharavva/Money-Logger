@@ -11,8 +11,9 @@ class _NewLogsViewState extends State<NewLogsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("New Log"),
+      appBar: AppBar(backgroundColor: Colors.black,
+        title: const Text("New Log",
+         style: TextStyle(color: Colors.white)) ,
       ),
       body: const Text("Make your log here..."),  
     );
