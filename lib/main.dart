@@ -15,7 +15,8 @@ void main() {
   runApp( MaterialApp(
       title: 'Money Logger', 
       theme: ThemeData(
-          primarySwatch: Colors.grey,
+          primarySwatch: Colors.lightBlue,
+          fontFamily: 'Raleway'
       ),
       home: const HomePage(),
       routes: {

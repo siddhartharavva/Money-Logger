@@ -1,5 +1,6 @@
 
 // ignore_for_file: use_build_context_synchronously
+import 'package:money_logger/constants/colour_values.dart';
 
 import 'package:flutter/material.dart';
 import 'package:money_logger/constants/routes.dart';
@@ -16,66 +17,114 @@ class VerifyEmailView extends StatefulWidget {
 class _VerifyEmailViewState extends State<VerifyEmailView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      appBar: AppBar(backgroundColor: Colors.black,
-        title: const Text("Verification",
-          style: TextStyle(color: Colors.white)
-        ),
+    return Scaffold(backgroundColor:backgroundColour,
+      appBar: AppBar(backgroundColor: backgroundColour,
         
       ),
-      body: Column(
-          children: [
-            const Text("Verificaiton email has been sent,Open the email to verify your account",
-            textScaler: TextScaler.linear(2.5),
-            ),
-            TextButton(
-                style: TextButton.styleFrom(
-                 backgroundColor: const Color.fromARGB(255, 79, 79, 79),   
-                ),
-              onPressed: () async {
-              AuthService.firebase().sendEmailVerification();
+      body: Center(
+        child: Column(
+            children: [
+              const Spacer(flex:2),
+
+              const Text("Verify Email",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontFamily: 'RobotoRoman',
+                  fontSize: 50.0,
+                  color: textColour,
               
-            }, 
-            child: const Text("Resend Verification email",
-            style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)
-            ), 
+                ),              
+              ),
+              const Spacer(flex:2),
+              const Text("Email has been sent to your mail for the account to get verified",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontFamily: 'RobotoRoman',
+                  fontSize: 17.0,
+                  color: unhighlightedTextColour,
+              
+                ),              
+              ),
+              const Spacer(flex:2),
+              SizedBox(
+                width: 352,
+                height: 56,  
+                child: TextButton(
+            
+                     style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(primaryColour),
 
-            ),
-          ),
-          TextButton(
-                style: TextButton.styleFrom(
-                 backgroundColor: const Color.fromARGB(255, 79, 79, 79),   
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4.0),
+                    side: const BorderSide(color:primaryColour)
+                    )
+                   )           
+              ),
+                  onPressed: () async {
+                  AuthService.firebase().sendEmailVerification();
+                  
+                }, 
+                child: const Text("Resend Verification email",
+                  style: TextStyle(
+                    color: textColour,
+                    fontSize: 20.0,
+                    ),  
+                        
                 ),
-              onPressed: () {
-                 Navigator.of(context).pushNamedAndRemoveUntil(
-                  loginRoute,
-                (route) => false,
-              );
-            }, 
-            child: const Text("re-enter the details to login",
-            style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)
-            ), 
+                            ),
+              ),
+              const Spacer(flex:4),
 
-            ),
-          ),
-          TextButton(
-                style: TextButton.styleFrom(
-                 backgroundColor: const Color.fromARGB(255, 79, 79, 79),   
+            SizedBox(
+                width: 352,
+                height: 56,                
+              child: TextButton(
+            
+                     style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(primaryColour),
+
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4.0),
+                    side: const BorderSide(color:primaryColour)
+                    )
+                   )           
+              ),
+                  onPressed: () {
+                     Navigator.of(context).pushNamedAndRemoveUntil(
+                      loginRoute,
+                    (route) => false,
+                  );
+                }, 
+                child: const Text("Re-enter the details to login",
+                style: TextStyle(
+                    color: textColour,
+                    fontSize: 20.0,
+                    ),  
+                      
                 ),
-              onPressed: () async {
-                 await AuthService.firebase().logOut();
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                  registerRoute,
-                  (route) => false,
-                 );
-            }, 
-            child: const Text("Restart",
-            style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)
-            ), 
-
+              ),
             ),
-          ),  
-        ],
+            const Spacer(flex:100),
+
+            SizedBox(
+                width:246.21 ,
+                height:48,              
+              child: TextButton(
+              
+                  onPressed: () async {
+                     await AuthService.firebase().logOut();
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                      registerRoute,
+                      (route) => false,
+                     );
+                }, 
+                child: const Text("Made an error in creating an account? Restart here.",
+                style: TextStyle(color: unhighlightedTextColour), 
+                    ),
+              ),
+            ),  
+          ],
+        ),
       ),
     );
   }

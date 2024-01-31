@@ -42,6 +42,7 @@ dependencies:
   sqflite: ^2.3.0
   path_provider: ^2.1.2
   path: ^1.8.3
+  flutter_svg: ^2.0.9
 
 dev_dependencies:
   flutter_test:
@@ -60,12 +61,22 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/RobotoMedium.ttf
+        - asset: assets/fonts/RobotoRegular.ttf
+    - family: RobotoRoman
+      fonts:
+        - asset: assets/fonts/RobotoRomanBlack.ttf
+        - asset: assets/fonts/RobotoRomanBold.ttf
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
+  assets:
+  - assets/icons/
+  - assets/images/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
@@ -76,7 +87,7 @@ flutter:
 
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages
-
+ 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a

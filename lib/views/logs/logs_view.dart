@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_logger/constants/colour_values.dart';
 import 'package:money_logger/constants/routes.dart';
 import 'package:money_logger/enums/menu_action.dart';
 //import 'dart:developer'as devtools show log;
@@ -34,8 +35,8 @@ class _LogsViewState extends State<LogsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.black,
+    return Scaffold(backgroundColor: backgroundColour,
+      appBar: AppBar(backgroundColor: backgroundColour,
         title:const Text("Your logs",
           style: TextStyle(color: Colors.white)         
         ),
@@ -92,6 +93,7 @@ class _LogsViewState extends State<LogsView> {
           }
         },
       ),
+      
     );
   }
 }
