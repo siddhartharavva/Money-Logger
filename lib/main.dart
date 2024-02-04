@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:money_logger/services/auth/auth_service.dart';
 import 'package:money_logger/views/home_page.dart';
-import 'package:money_logger/views/logs/logs_view.dart';
+//import 'package:money_logger/views/logs/logs_view.dart';
 import 'package:money_logger/views/login_view.dart';
+import 'package:money_logger/views/logs/logs_view.dart';
 import 'package:money_logger/views/logs/new_logs_view.dart';
+//import 'package:money_logger/views/logs/new_logs_view.dart';
 import 'package:money_logger/views/register_view.dart';
 import 'package:money_logger/views/verify_email_view.dart';
 import 'package:money_logger/constants/routes.dart';
@@ -16,7 +18,7 @@ void main() {
       title: 'Money Logger', 
       theme: ThemeData(
           primarySwatch: Colors.lightBlue,
-          fontFamily: 'Raleway'
+          fontFamily: 'RobotoRoman'
       ),
       home: const HomePage(),
       routes: {
@@ -52,7 +54,6 @@ class HomePage extends StatelessWidget {
               if(user.isEmailVerified ){
                 return const LogsView();
               }else{
-                devtools.log(user.toString());
                 return const VerifyEmailView();
               }
              }else{

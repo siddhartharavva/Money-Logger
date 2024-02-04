@@ -8,7 +8,7 @@ class CouldNotDeleteUser implements Exception{}
 
 class UserAlreadyExists implements Exception{}
 
-class CouldnotfindUser  implements Exception{}
+class CouldNotFindUser  implements Exception{}
 
 class CouldNotDeleteLog implements Exception{}
 
