@@ -12,11 +12,17 @@ class LogsService {
   List<DatabaseLog> _logs = [];
 
   static final LogsService _shared = LogsService._sharedInstance();
-  LogsService._sharedInstance();
+  LogsService._sharedInstance(){
+    _logsStreamController = StreamController<List<DatabaseLog>>.broadcast(
+      onListen: () {
+        _logsStreamController.sink.add(_logs)        ;
+      }
+    );
+  }
   factory LogsService() => _shared;
 
-  final _logsStreamController =
-      StreamController<List<DatabaseLog>>.broadcast();
+  late final StreamController<List<DatabaseLog>> _logsStreamController ;
+
 
   Stream<List<DatabaseLog>> get allLogs => _logsStreamController.stream;
 

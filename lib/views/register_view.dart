@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:money_logger/constants/routes.dart';
 import 'package:money_logger/services/auth/auth_exceptions.dart';
 import 'package:money_logger/services/auth/auth_service.dart';
-import 'package:money_logger/utilities/Show_Error_dialog.dart';
+import 'package:money_logger/utilities/dialogs/error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});

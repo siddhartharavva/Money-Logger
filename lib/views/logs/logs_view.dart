@@ -8,6 +8,9 @@ import 'package:money_logger/services/auth/auth_service.dart';
 import 'package:money_logger/services/crud/log_service.dart';
 import 'dart:developer' as devtools show log;
 
+import 'package:money_logger/utilities/dialogs/logout_dialog.dart';
+import 'package:money_logger/views/logs/LogsListView.dart';
+
 
 class LogsView extends StatefulWidget {
   const LogsView({super.key});
@@ -78,7 +81,6 @@ class _LogsViewState extends State<LogsView> {
       body: FutureBuilder(
         future: _data,
         builder: (context, snapshot) {
-
           switch (snapshot.connectionState) {
             case ConnectionState.done:
             return StreamBuilder(
@@ -86,10 +88,23 @@ class _LogsViewState extends State<LogsView> {
               builder: (context,snapshot){
                 switch(snapshot.connectionState){
                   case ConnectionState.waiting:
-                    return const Text("waiting for all notes");
+                  case ConnectionState.active:
+                    if(snapshot.hasData){
+                      final allLogs = snapshot.data as List<DatabaseLog>;
+                      return LogsListView(
+                        logs: allLogs, 
+                        onDeleteLog: (log) async{
+                          await _logsService.deleteLog(id: log.id);
+                        });
+                    }else{
+                      return const CircularProgressIndicator();
+
+                    }
+                   
                   default:
                     return const CircularProgressIndicator();
-                }
+                  }
+
               }
               
               );
@@ -101,38 +116,7 @@ class _LogsViewState extends State<LogsView> {
       ),
     );
   }
-  @override
-  void dispose() {
-    _logsService.close();
-    super.dispose();
-  }
 
 }
 
-
-Future<bool> showlogOutDialog(BuildContext context) async {
-  return await showDialog<bool>(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text("Log out"),
-        content: const Text("Are you sure you want to log out"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-            child: const Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-            child: const Text("Log Out"),
-          ),
-        ],
-      );
-    },
-  ).then((value) => value ?? false);
-}
 

@@ -102,6 +102,7 @@ void dispose(){
                 maxLines: null,
                 decoration: const InputDecoration(
                   hintText: 'start typing text here...',
+                  hintStyle: TextStyle(color: Colors.white),
                 ),
               );
             default:
