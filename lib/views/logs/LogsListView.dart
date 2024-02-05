@@ -1,20 +1,25 @@
+
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:money_logger/services/crud/log_service.dart';
 import 'package:money_logger/utilities/dialogs/delete_dialog.dart';
 
-typedef DeleteLogCallBack = void Function(DatabaseLog log);
+typedef LogCallBack = void Function(DatabaseLog log);
 
 class LogsListView extends StatelessWidget {
 
   
 
   final List<DatabaseLog> logs;
-  final DeleteLogCallBack onDeleteLog;
-
+  final LogCallBack onDeleteLog;
+  final LogCallBack onTap;
   const LogsListView({
     super.key,
     required this.logs,
     required this.onDeleteLog,    
+    required this.onTap,
     });
 
 
@@ -26,6 +31,9 @@ class LogsListView extends StatelessWidget {
       itemBuilder: (context, index) {
         final log = logs[index];
           return ListTile(
+            onTap: (){
+              onTap(log);
+            },
             title: Text(
               log.text,
               maxLines: 1,

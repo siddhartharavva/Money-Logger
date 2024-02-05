@@ -6,10 +6,9 @@ import 'package:money_logger/constants/routes.dart';
 import 'package:money_logger/enums/menu_action.dart';
 import 'package:money_logger/services/auth/auth_service.dart';
 import 'package:money_logger/services/crud/log_service.dart';
-import 'dart:developer' as devtools show log;
 
 import 'package:money_logger/utilities/dialogs/logout_dialog.dart';
-import 'package:money_logger/views/logs/LogsListView.dart';
+import 'package:money_logger/views/logs/logsListView.dart';
 
 
 class LogsView extends StatefulWidget {
@@ -48,7 +47,7 @@ class _LogsViewState extends State<LogsView> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(newLogRoute);
+              Navigator.of(context).pushNamed(createOrUpdateLogRoute);
             },
             icon: const Icon(Icons.add),
           ),
@@ -59,6 +58,7 @@ class _LogsViewState extends State<LogsView> {
                   final shouldLogout = await showlogOutDialog(context);
                   if (shouldLogout) {
                     await AuthService.firebase().logOut();
+                    // ignore: use_build_context_synchronously
                     await Navigator.of(context).pushNamedAndRemoveUntil(
                       loginRoute,
                       (_) => false,
@@ -95,7 +95,18 @@ class _LogsViewState extends State<LogsView> {
                         logs: allLogs, 
                         onDeleteLog: (log) async{
                           await _logsService.deleteLog(id: log.id);
-                        });
+                        },
+                        onTap: (log) async {
+                         Navigator.of(context).pushNamed(
+                          createOrUpdateLogRoute,
+                          arguments: log,
+                          
+                        );
+
+                        },
+                        );
+                        
+
                     }else{
                       return const CircularProgressIndicator();
 

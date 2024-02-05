@@ -4,6 +4,4 @@ const loginRoute = '/login';
  const homeRoute = '/homepage/';
  const verifyEmailRoute = '/verify';
  const logRoute = '/Ui';
-const newLogRoute = '/logs/new_logs';
-const newNoteRoute = 'notes_view';
- const notesRoute = '/Ui';
+const createOrUpdateLogRoute = '/logs/new_logs';

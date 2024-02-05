@@ -4,12 +4,11 @@ import 'package:money_logger/views/home_page.dart';
 //import 'package:money_logger/views/logs/logs_view.dart';
 import 'package:money_logger/views/login_view.dart';
 import 'package:money_logger/views/logs/logs_view.dart';
-import 'package:money_logger/views/logs/new_logs_view.dart';
+import 'package:money_logger/views/logs/create_update_log_view.dart';
 //import 'package:money_logger/views/logs/new_logs_view.dart';
 import 'package:money_logger/views/register_view.dart';
 import 'package:money_logger/views/verify_email_view.dart';
 import 'package:money_logger/constants/routes.dart';
-import 'dart:developer'as devtools show log;
 
 void main() {
   
@@ -27,7 +26,7 @@ void main() {
         homeRoute : (context) => const HomePage(),
         logRoute : (context) => const LogsView(),
         verifyEmailRoute : (context) => const VerifyEmailView(),
-        newLogRoute: (context) => const NewLogsView(),
+        createOrUpdateLogRoute: (context) => const CreateUpdateLogView(),
       },
 
 

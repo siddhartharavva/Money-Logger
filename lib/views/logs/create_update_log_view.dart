@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:money_logger/constants/colour_values.dart';
 import 'package:money_logger/services/auth/auth_service.dart';
 import 'package:money_logger/services/crud/log_service.dart';
+import 'package:money_logger/utilities/generics/get_arguments.dart';
 
-class NewLogsView extends StatefulWidget {
-  const NewLogsView({super.key});
+class CreateUpdateLogView extends StatefulWidget {
+  const CreateUpdateLogView({super.key});
 
   @override
-  State<NewLogsView> createState() => _NewLogsViewState();
+  State<CreateUpdateLogView> createState() => _CreateUpdateLogViewState();
 }
 
-class _NewLogsViewState extends State<NewLogsView> {
+class _CreateUpdateLogViewState extends State<CreateUpdateLogView> {
   DatabaseLog? _log;
   late final  LogsService _logsService;
   late final TextEditingController _textController;
@@ -41,7 +42,15 @@ void _setupTextControllerListener(){
 
 }
 
-  Future<DatabaseLog> createNewLog() async {
+  Future<DatabaseLog> createOrGetExistingLog(BuildContext context) async {
+    
+    final widgetLog = context.getArgument<DatabaseLog>();
+
+    if(widgetLog != null)    {
+      _log = widgetLog;
+      _textController.text = widgetLog.text;
+      return widgetLog;
+    }
     final existingLog = _log;
     if(existingLog != null){
       return existingLog;
@@ -49,7 +58,9 @@ void _setupTextControllerListener(){
     final currentUser = AuthService.firebase().currentUser!;
     final email = currentUser.email!;
     final owner = await _logsService.getUser(email: email);
-    return await  _logsService.createLog(owner: owner);
+    final newLog = await  _logsService.createLog(owner: owner);
+    _log = newLog;
+    return newLog;
   }
 
 void _deleteLogifTextIsEmpty() {
@@ -89,12 +100,11 @@ void dispose(){
          style: TextStyle(color: Colors.white)) ,
       ),
       body:FutureBuilder(
-        future: createNewLog(),
+        future: createOrGetExistingLog(context),
         builder:(context,snapshot) {
           switch(snapshot.connectionState){
            
             case ConnectionState.done:
-              _log = snapshot.data as DatabaseLog;
               _setupTextControllerListener();
               return TextField(
                 controller: _textController,
