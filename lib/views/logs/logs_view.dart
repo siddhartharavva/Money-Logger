@@ -24,6 +24,8 @@ class _LogsViewState extends State<LogsView> {
   String get userEmail => AuthService.firebase().currentUser?.email ?? '';
 
 
+
+   
    late Future<DatabaseUser> _data;
 
     @override
@@ -47,9 +49,13 @@ class _LogsViewState extends State<LogsView> {
         actions: [
           IconButton(
             onPressed: () {
+              
               Navigator.of(context).pushNamed(createOrUpdateLogRoute);
             },
-            icon: const Icon(Icons.add),
+            icon: const Icon(
+              Icons.add, 
+              color: Colors.white,
+            ),
           ),
           PopupMenuButton<MenuAction>(
             onSelected: (value) async {
