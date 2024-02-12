@@ -2,8 +2,10 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:money_logger/constants/colour_values.dart';
 import 'package:money_logger/services/crud/log_service.dart';
 import 'package:money_logger/utilities/dialogs/delete_dialog.dart';
+import 'package:path/path.dart';
 
 typedef LogCallBack = void Function(DatabaseLog log);
 
@@ -34,6 +36,9 @@ class LogsListView extends StatelessWidget {
               onTap(log);
             },
             title: Text(
+              style:const TextStyle(
+                color: textColour,
+              ),
               log.text,
               maxLines: 1,
               softWrap: true,

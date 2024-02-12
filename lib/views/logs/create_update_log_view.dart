@@ -105,14 +105,18 @@ void dispose(){
           switch(snapshot.connectionState){
            
             case ConnectionState.done:
+            _log = snapshot.data as DatabaseLog;
               _setupTextControllerListener();
               return TextField(
+                style: const TextStyle(
+                  color: textColour,
+                ),
                 controller: _textController,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 decoration: const InputDecoration(
                   hintText: 'start typing text here...',
-                  hintStyle: TextStyle(color: Colors.white),
+                  hintStyle: TextStyle(color: unhighlightedTextColour),
                 ),
               );
             default:
