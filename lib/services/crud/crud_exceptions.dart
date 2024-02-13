@@ -15,3 +15,5 @@ class CouldNotDeleteLog implements Exception{}
 class CouldNotFindLog implements Exception{}
 
 class CouldNotUpdateLog implements Exception{}
+
+class UserShouldBeSetBeforeReadingAllLogs implements Exception{}

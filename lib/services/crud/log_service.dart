@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:money_logger/extensions/list/filter.dart';
 import 'package:money_logger/services/crud/crud_exceptions.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -9,6 +11,9 @@ class LogsService {
   Database? _db;
 
   List<DatabaseLog> _logs = [];
+
+DatabaseUser? _user;
+
 
   static final LogsService _shared = LogsService._sharedInstance();
   LogsService._sharedInstance(){
@@ -23,16 +28,33 @@ class LogsService {
   late final StreamController<List<DatabaseLog>> _logsStreamController ;
 
 
-  Stream<List<DatabaseLog>> get allLogs => _logsStreamController.stream;
+  Stream<List<DatabaseLog>> get allLogs => 
+  _logsStreamController.stream.filter((log){
+  final  currentUser = _user;
+  if(currentUser != null){
+    return log.userId == currentUser.id;
+  }else{
+    throw UserShouldBeSetBeforeReadingAllLogs();
+  }
 
-Future<DatabaseUser> getOrCreateUser({required String email}) async {
+  });
+
+Future<DatabaseUser> getOrCreateUser({
+  required String email,
+  bool setAsCurrentUser = true,
+  }) async {
   try {
     final existingUser = await getUser(email: email);
+    if(setAsCurrentUser){
+      _user = existingUser;
+    }
     return existingUser;
   } on CouldNotFindUser {
 
     final createdUser = await createUser(email: email);
-
+  if(setAsCurrentUser){
+      _user = createdUser;
+    }
     return createdUser;
   } catch (e) {
           debugPrint('Error in getOrCreateUser: $e');
