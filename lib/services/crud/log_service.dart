@@ -14,8 +14,8 @@ class LogsService {
   LogsService._sharedInstance(){
     _logsStreamController = StreamController<List<DatabaseLog>>.broadcast(
       onListen: () {
-        _logsStreamController.sink.add(_logs)        ;
-      }
+        _logsStreamController.sink.add(_logs);
+      },
     );
   }
   factory LogsService() => _shared;
@@ -132,6 +132,45 @@ Future<DatabaseUser> getUser({required String email}) async {
     _logsStreamController.add(_logs);
   }
 
+Future<DatabaseLog> updateLog({
+  required DatabaseLog log,
+  required String text,
+}) async {
+  await _ensureDbIsOpen();
+  final db = _getDatabaseOrThrow();
+
+  // Update DB
+  final updatesCount = await db.update(logsTable, {
+    textColumn: text,
+    isSyncedWithCloudColumn: 0,
+
+  }, where: 'id = ?', whereArgs: [log.id]);
+
+  if (updatesCount == 0) {
+    throw CouldNotUpdateLog();
+  } else {
+    // Create a new DatabaseLog object with the updated properties
+    final updatedLog = DatabaseLog(
+      id: log.id,
+      userId: log.userId,
+      text: text,
+      isSyncedWithCloud: false,
+    );
+
+    // Update the log in the _logs list
+    final index = _logs.indexWhere((l) => l.id == log.id);
+    if (index != -1) {
+      _logs[index] = updatedLog;
+    }
+
+    // Notify listeners about the change in logs
+    _logsStreamController.add(_logs);
+    
+    return updatedLog;
+  }
+}
+// this is the prev code now the new code is above
+/*
   Future<DatabaseLog> updateLog({
     required DatabaseLog log,
     required String text,
@@ -157,7 +196,7 @@ Future<DatabaseUser> getUser({required String email}) async {
       _logsStreamController.add(_logs);
       return updatedLog;
     }
-  }
+  }*/
     Future<void> _ensureDbIsOpen() async {
     try {
       await open();
@@ -221,36 +260,41 @@ Future<DatabaseUser> getUser({required String email}) async {
     }
   }
 
-  Future<DatabaseLog> createLog({required DatabaseUser owner}) async {
-    await _ensureDbIsOpen();
-    final db = _getDatabaseOrThrow();
+Future<DatabaseLog> createLog({required DatabaseUser owner}) async {
+  await _ensureDbIsOpen();
+  final db = _getDatabaseOrThrow();
 
-    // make sure owner exists in the database with the correct id
-    final dbUser = await getUser(email: owner.email);
-    if (dbUser != owner) {
-      throw CouldNotFindUser();
-    }
-
-    const text = '';
-    // create the log
-    final logId = await db.insert(logsTable, {
-      userIdColumn: owner.id,
-      textColumn: text,
-      isSyncedWithCloudColumn: 1,
-    });
-
-    final log = DatabaseLog(
-      id: logId,
-      userId: owner.id,
-      text: text,
-      isSyncedWithCloud: true,
-    );
-
-    _logs.add(log);
-    _logsStreamController.add(_logs);
-
-    return log;
+  // make sure owner exists in the database with the correct id
+  final dbUser = await getUser(email: owner.email);
+  if (dbUser != owner) {
+    throw CouldNotFindUser();
   }
+
+  const text = '';
+  // create the log
+  final logId = await db.insert(logsTable, {
+    userIdColumn: owner.id,
+    textColumn: text,
+    isSyncedWithCloudColumn: 1,
+  });
+
+  final log = DatabaseLog(
+    id: logId,
+    userId: owner.id,
+    text: text,
+    isSyncedWithCloud: true,
+  );
+
+  // Create a new list with the added log and the existing logs
+  final List<DatabaseLog> updatedLogs = List.from(_logs)..add(log);
+
+  // Notify listeners about the change in logs
+  _logsStreamController.add(updatedLogs);
+
+  return log;
+}
+
+
 
   Future<void> deleteUser({required String email}) async {
     await _ensureDbIsOpen();

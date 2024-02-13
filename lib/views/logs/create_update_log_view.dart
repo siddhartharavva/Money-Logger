@@ -55,6 +55,7 @@ void _setupTextControllerListener(){
     if(existingLog != null){
       return existingLog;
     }
+    debugPrint("test");
     final currentUser = AuthService.firebase().currentUser!;
     final email = currentUser.email!;
     final owner = await _logsService.getUser(email: email);
@@ -83,9 +84,9 @@ if (_textController.text.isEmpty && log!= null) {
       );
     }
   }
+
 @override
 void dispose(){
-
   _deleteLogifTextIsEmpty();
   _saveLogIfTextNotEmpty();
   _textController.dispose();
@@ -105,7 +106,6 @@ void dispose(){
           switch(snapshot.connectionState){
            
             case ConnectionState.done:
-            _log = snapshot.data as DatabaseLog;
               _setupTextControllerListener();
               return TextField(
                 style: const TextStyle(

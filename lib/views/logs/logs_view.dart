@@ -9,6 +9,7 @@ import 'package:money_logger/services/crud/log_service.dart';
 
 import 'package:money_logger/utilities/dialogs/logout_dialog.dart';
 import 'package:money_logger/views/logs/logsListView.dart';
+    
 
 
 class LogsView extends StatefulWidget {
@@ -54,7 +55,7 @@ class _LogsViewState extends State<LogsView> {
             },
             icon: const Icon(
               Icons.add, 
-              color: Colors.white,
+              color:textColour,
             ),
           ),
           PopupMenuButton<MenuAction>(
@@ -97,6 +98,8 @@ class _LogsViewState extends State<LogsView> {
                   case ConnectionState.active:
                     if(snapshot.hasData){
                       final allLogs = snapshot.data as List<DatabaseLog>;
+                 
+                      debugPrint(allLogs.toString());
                       return LogsListView(
                         logs: allLogs, 
                         onDeleteLog: (log) async{
@@ -111,7 +114,7 @@ class _LogsViewState extends State<LogsView> {
 
                         },
                         );
-                        
+                  
 
                     }else{
                       return const CircularProgressIndicator();
