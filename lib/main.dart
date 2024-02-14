@@ -10,8 +10,8 @@ import 'package:money_logger/views/register_view.dart';
 import 'package:money_logger/views/verify_email_view.dart';
 import 'package:money_logger/constants/routes.dart';
 
-void main() {
-  
+void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
   runApp( MaterialApp(
       title: 'Money Logger', 

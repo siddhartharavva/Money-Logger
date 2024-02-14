@@ -3,19 +3,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:money_logger/constants/colour_values.dart';
-import 'package:money_logger/services/crud/log_service.dart';
+import 'package:money_logger/services/cloud/cloud_note.dart';
 import 'package:money_logger/utilities/dialogs/delete_dialog.dart';
-import 'package:path/path.dart';
 
-typedef LogCallBack = void Function(DatabaseLog log);
+typedef LogCallBack = void Function(CloudLog log);
 
 class LogsListView extends StatelessWidget {
-
-  
-
-  final List<DatabaseLog> logs;
+  final Iterable<CloudLog> logs;
   final LogCallBack onDeleteLog;
   final LogCallBack onTap;
+
   const LogsListView({
     super.key,
     required this.logs,
@@ -30,7 +27,7 @@ class LogsListView extends StatelessWidget {
     return ListView.builder(
       itemCount: logs.length,
       itemBuilder: (context, index) {
-        final log = logs[index];
+        final log = logs.elementAt(index);
           return ListTile(
             onTap: (){
               onTap(log);

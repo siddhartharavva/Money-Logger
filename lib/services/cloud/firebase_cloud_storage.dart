@@ -1,4 +1,3 @@
-import 'dart:js_interop_unsafe';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:money_logger/services/cloud/cloud_note.dart';
@@ -32,12 +31,10 @@ class FirebaseCloudStorage {
   }
 
 
-  Stream<Iterable<CloudLog>> allLogs({
-    required String ownerUserId
-    })=>
+  Stream<Iterable<CloudLog>> allLogs({required String ownerUserId}) =>
     logs.snapshots().map((event)=> event.docs
-    .map((doc)=> CloudLog.fromSnapshot(doc))
-    .where((log) => log.ownerUserId == ownerUserId)); 
+        .map((doc)=> CloudLog.fromSnapshot(doc))
+        .where((log) => log.ownerUserId == ownerUserId)); 
 
   Future<Iterable<CloudLog>> getLogs({required String ownerUserId}) async{
     try{
@@ -49,13 +46,7 @@ class FirebaseCloudStorage {
       .get()
       .then(
         (value) => value.docs.map(
-        (doc) {
-          return CloudLog(
-            documentId: doc.id, 
-            ownerUserId:  doc.data()[ownerUserIdFieldName] as String, 
-            text: doc.data()[textFieldName] as String,
-          );
-        },
+        (doc) => CloudLog.fromSnapshot(doc),
       ),
     );
     }catch (e){
@@ -65,11 +56,17 @@ class FirebaseCloudStorage {
   
   
   
-void createNewLog({required String ownerUserId}) async{
-    await logs.add(({
+Future<CloudLog> createNewLog({required String ownerUserId}) async{
+    final document = await logs.add(({
       ownerUserIdFieldName: ownerUserId,
       textFieldName: '',
     }));
+    final fetchedLog = await document.get();
+    return CloudLog(
+      documentId: fetchedLog.id,
+      ownerUserId: ownerUserId,
+      text:'',
+    );
   }
 
   static final FirebaseCloudStorage _shared =

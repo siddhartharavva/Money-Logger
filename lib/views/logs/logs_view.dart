@@ -5,7 +5,8 @@ import 'package:money_logger/constants/colour_values.dart';
 import 'package:money_logger/constants/routes.dart';
 import 'package:money_logger/enums/menu_action.dart';
 import 'package:money_logger/services/auth/auth_service.dart';
-import 'package:money_logger/services/crud/log_service.dart';
+import 'package:money_logger/services/cloud/cloud_note.dart';
+import 'package:money_logger/services/cloud/firebase_cloud_storage.dart';
 
 import 'package:money_logger/utilities/dialogs/logout_dialog.dart';
 import 'package:money_logger/views/logs/logsListView.dart';
@@ -20,19 +21,18 @@ class LogsView extends StatefulWidget {
 }
 
 class _LogsViewState extends State<LogsView> {
-  late final LogsService _logsService;
+  late final FirebaseCloudStorage _logsService;
   
-  String get userEmail => AuthService.firebase().currentUser!.email;
+  String get userId => AuthService.firebase().currentUser!.id;
 
 
 
    
-   late Future<DatabaseUser> _data;
 
     @override
   void initState() {
-    _logsService = LogsService();
-    _data = _logsService.getOrCreateUser(email: userEmail);
+    _logsService = FirebaseCloudStorage();
+    
     super.initState();
   }
 
@@ -85,25 +85,18 @@ class _LogsViewState extends State<LogsView> {
         ],
         
       ),
-      body: FutureBuilder(
-        future: _data,
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-            return StreamBuilder(
-              stream:_logsService.allLogs, 
+      body: StreamBuilder(
+              stream:_logsService.allLogs(ownerUserId: userId), 
               builder: (context,snapshot){
                 switch(snapshot.connectionState){
                   case ConnectionState.waiting:
                   case ConnectionState.active:
                     if(snapshot.hasData){
-                      final allLogs = snapshot.data as List<DatabaseLog>;
-                 
-                      debugPrint(allLogs.toString());
+                      final allLogs = snapshot.data as Iterable<CloudLog>;                 
                       return LogsListView(
                         logs: allLogs, 
                         onDeleteLog: (log) async{
-                          await _logsService.deleteLog(id: log.id);
+                          await _logsService.deleteLog(documentId: log.documentId);
                         },
                         onTap: (log) async {
                          Navigator.of(context).pushNamed(
@@ -118,22 +111,12 @@ class _LogsViewState extends State<LogsView> {
 
                     }else{
                       return const CircularProgressIndicator();
-
-                    }
-                   
+                    }                   
                   default:
                     return const CircularProgressIndicator();
                   }
-
-              }
-              
-              );
-              default:
-              return const CircularProgressIndicator();
-      
-          }
-        },
-      ),
+              }    
+           ),
     );
   }
 

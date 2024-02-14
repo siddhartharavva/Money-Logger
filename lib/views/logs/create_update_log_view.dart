@@ -1,8 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:money_logger/constants/colour_values.dart';
 import 'package:money_logger/services/auth/auth_service.dart';
-import 'package:money_logger/services/crud/log_service.dart';
 import 'package:money_logger/utilities/generics/get_arguments.dart';
+import "package:money_logger/services/cloud/cloud_note.dart";
+import "package:money_logger/services/cloud/firebase_cloud_storage.dart";
 
 class CreateUpdateLogView extends StatefulWidget {
   const CreateUpdateLogView({super.key});
@@ -12,13 +14,13 @@ class CreateUpdateLogView extends StatefulWidget {
 }
 
 class _CreateUpdateLogViewState extends State<CreateUpdateLogView> {
-  DatabaseLog? _log;
-  late final  LogsService _logsService;
+  CloudLog? _log;
+  late final  FirebaseCloudStorage _logsService;
   late final TextEditingController _textController;
 
 @override
 void initState(){
-  _logsService = LogsService();
+  _logsService = FirebaseCloudStorage();
   _textController = TextEditingController();
   super.initState();
 }
@@ -30,9 +32,9 @@ void _textControllerListener() async {
   }
   final text = _textController.text;
   await _logsService.updateLog(
-    log: log, 
-    text: text,
-  );
+        documentId: log.documentId, 
+        text: text,
+      );
 }
 
 void _setupTextControllerListener(){
@@ -42,9 +44,9 @@ void _setupTextControllerListener(){
 
 }
 
-  Future<DatabaseLog> createOrGetExistingLog(BuildContext context) async {
+  Future<CloudLog> createOrGetExistingLog(BuildContext context) async {
     
-    final widgetLog = context.getArgument<DatabaseLog>();
+    final widgetLog = context.getArgument<CloudLog>();
 
     if(widgetLog != null)    {
       _log = widgetLog;
@@ -57,9 +59,8 @@ void _setupTextControllerListener(){
     }
     debugPrint("test");
     final currentUser = AuthService.firebase().currentUser!;
-    final email = currentUser.email;
-    final owner = await _logsService.getUser(email: email);
-    final newLog = await  _logsService.createLog(owner: owner);
+    final userId = currentUser.id;
+    final newLog = await  _logsService.createNewLog(ownerUserId: userId);
     _log = newLog;
     return newLog;
   }
@@ -68,7 +69,7 @@ void _deleteLogifTextIsEmpty() {
 
 final log = _log;
 if (_textController.text.isEmpty && log!= null) {
-  _logsService.deleteLog(id: log.id);
+  _logsService.deleteLog(documentId: log.documentId);
   }
 }
 
@@ -79,9 +80,10 @@ if (_textController.text.isEmpty && log!= null) {
     final text = _textController.text;
     if(log != null && text.isNotEmpty){
        await _logsService.updateLog(
-        log: log, 
+        documentId: log.documentId, 
         text: text,
       );
+    
     }
   }
 
