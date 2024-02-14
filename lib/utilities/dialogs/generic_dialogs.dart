@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_logger/constants/colour_values.dart';
 
 typedef DialogOptionBuilder<T> = Map<String ,T?> Function();
 Future<T?> showGenericDialog<T>({
@@ -13,11 +14,21 @@ Future<T?> showGenericDialog<T>({
     context: context, 
     builder: (context){
         return  AlertDialog(
-          title:Text(title),
-          content: Text(content),
+           shape: RoundedRectangleBorder(
+           borderRadius: BorderRadius.circular(4.0)),
+           backgroundColor:primaryColour,
+          title:Text(title,
+          style:const TextStyle(color:textColour,
+          )
+          ),
+          content: Text(content,
+          style:const TextStyle(color:textColour,
+          )
+          ),
           actions: options.keys.map((optionTitle)  {
             final value = options[optionTitle];
             return TextButton(
+
               onPressed: () {
               if(value !=null){
                 Navigator.of(context).pop(value);
@@ -26,6 +37,7 @@ Future<T?> showGenericDialog<T>({
               }
             },
              child:Text(
+              style: const TextStyle(color:textColour),
               optionTitle,
               )
             );

@@ -12,7 +12,6 @@ import 'package:money_logger/utilities/dialogs/logout_dialog.dart';
 import 'package:money_logger/views/logs/logsListView.dart';
     
 
-
 class LogsView extends StatefulWidget {
   const LogsView({super.key});
 
@@ -42,23 +41,106 @@ class _LogsViewState extends State<LogsView> {
     return Scaffold(
       backgroundColor: backgroundColour,
       appBar: AppBar(
-        backgroundColor: backgroundColour,
+        backgroundColor: bottomBarColour,
         title: const Text(
           "Your logs",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: textColour),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              
-              Navigator.of(context).pushNamed(createOrUpdateLogRoute);
-            },
-            icon: const Icon(
-              Icons.add, 
-              color:textColour,
+   
+      ),
+      body: StreamBuilder(
+              stream:_logsService.allLogs(ownerUserId: userId), 
+              builder: (context,snapshot){
+                switch(snapshot.connectionState){
+                  case ConnectionState.waiting:
+                  case ConnectionState.active:
+                    if(snapshot.hasData){
+                      final allLogs = snapshot.data as Iterable<CloudLog>;                 
+                      return LogsListView(
+                        logs: allLogs, 
+                        onDeleteLog: (log) async{
+                          await _logsService.deleteLog(documentId: log.documentId);
+                        },
+                        onTap: (log) async {
+                         Navigator.of(context).pushNamedAndRemoveUntil(
+                          createOrUpdateLogRoute,
+                          (route) => false,
+                          arguments: log,
+
+                          
+                        );
+
+                        },
+                        );
+                  
+
+                    }else{
+                      return const CircularProgressIndicator();
+                    }                   
+                  default:
+                    return const CircularProgressIndicator();
+                  }
+              }    
+           ),
+    floatingActionButton: 
+    SizedBox(
+      width:150,
+      height: 50,
+      child: FloatingActionButton(
+        onPressed: () {
+           Navigator.of(context).pushNamedAndRemoveUntil(
+                        createOrUpdateLogRoute,
+                        (route) => false,
+                      );
+        },
+        shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4), // Border radius
+        ),
+        backgroundColor: primaryColour,
+        child: const Text("+ADD NEW LOG",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20,
+            color: textColour,
             ),
+           ), // Set the background color of the button
           ),
-          PopupMenuButton<MenuAction>(
+    ),
+    
+  floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+
+  bottomNavigationBar: BottomAppBar(
+        
+        color: bottomBarColour, // Adjust color as needed
+          child:  Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+
+              const Icon(Icons.home,
+                size: 35,
+                color: unhighlightedbBariconColor,),
+
+
+              const SizedBox(width:spacing+10),
+             
+             
+             
+              IconButton(
+                onPressed: () {
+                  // Add action for right icon
+                },
+                icon: const Icon(Icons.bar_chart,
+                size: 37,
+                color: bBariconColor,
+                ),
+                
+              ),
+            
+            
+            const SizedBox(width:spacing),
+
+         PopupMenuButton<MenuAction>(
+
             onSelected: (value) async {
               switch (value) {
                 case MenuAction.logout:
@@ -76,50 +158,26 @@ class _LogsViewState extends State<LogsView> {
             itemBuilder: (context) {
               return [
                 const PopupMenuItem<MenuAction>(
+                  
                   value: MenuAction.logout,
-                  child: Text("Logout"),
+                  child: Text("Logout",
+                  style: TextStyle(color: textColour,)),
                 ),
               ];
             },
-          )
-        ],
-        
+          color: primaryColour, 
+
+          iconColor: bBariconColor,
+          iconSize: 35,
+          ),
+             
+            ],
+          ),
+    
       ),
-      body: StreamBuilder(
-              stream:_logsService.allLogs(ownerUserId: userId), 
-              builder: (context,snapshot){
-                switch(snapshot.connectionState){
-                  case ConnectionState.waiting:
-                  case ConnectionState.active:
-                    if(snapshot.hasData){
-                      final allLogs = snapshot.data as Iterable<CloudLog>;                 
-                      return LogsListView(
-                        logs: allLogs, 
-                        onDeleteLog: (log) async{
-                          await _logsService.deleteLog(documentId: log.documentId);
-                        },
-                        onTap: (log) async {
-                         Navigator.of(context).pushNamed(
-                          createOrUpdateLogRoute,
-                          arguments: log,
-                          
-                        );
 
-                        },
-                        );
-                  
-
-                    }else{
-                      return const CircularProgressIndicator();
-                    }                   
-                  default:
-                    return const CircularProgressIndicator();
-                  }
-              }    
-           ),
     );
+    
   }
 
 }
-
-

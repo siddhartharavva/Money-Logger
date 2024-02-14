@@ -24,36 +24,52 @@ class LogsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.separated(
       itemCount: logs.length,
+      separatorBuilder: (BuildContext context, int index) => const Divider(
+        color: backgroundColour, 
+        thickness: 5, 
+        height: 5, 
+  ),
       itemBuilder: (context, index) {
         final log = logs.elementAt(index);
-          return ListTile(
-            onTap: (){
-              onTap(log);
-            },
-            title: Text(
-              style:const TextStyle(
-                color: textColour,
-              ),
-              log.text,
-              maxLines: 1,
-              softWrap: true,
-              overflow: TextOverflow.ellipsis,
-              ),
-              trailing: IconButton(
-                onPressed: () async {            
-                  final shouldDelete = await showDeleteDialog(context);
-                  if(shouldDelete){
-                    onDeleteLog(log);
-                  }
+           return Padding(
+
+             padding: const EdgeInsets.fromLTRB(0.0,7, 10.0, 0.0),
+               child: ListTile(
+                
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4.0)
+                    ),
+                    tileColor:primaryColour, 
+               
+                onTap: (){
+                  onTap(log);
                 },
-                icon: const Icon(
-                  Icons.delete, 
-                  color: Colors.white,
-                  )                
+                title: Text(
+                  style:const TextStyle(
+                    color: textColour,
+                  ),
+                  log.text,
+                  maxLines: 1,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  ),
+                  trailing: IconButton(
+                    onPressed: () async {            
+                      final shouldDelete = await showDeleteDialog(context);
+                      if(shouldDelete){
+                        onDeleteLog(log);
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.delete, 
+                      color: iconColor,
+                      )                
+                    ),
                 ),
-            );
+            
+           );
         }
     );
   }

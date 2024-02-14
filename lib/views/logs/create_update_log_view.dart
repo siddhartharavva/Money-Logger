@@ -1,7 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:money_logger/constants/colour_values.dart';
+import 'package:money_logger/constants/routes.dart';
+import 'package:money_logger/enums/menu_action.dart';
 import 'package:money_logger/services/auth/auth_service.dart';
+import 'package:money_logger/utilities/dialogs/logout_dialog.dart';
 import 'package:money_logger/utilities/generics/get_arguments.dart';
 import "package:money_logger/services/cloud/cloud_note.dart";
 import "package:money_logger/services/cloud/firebase_cloud_storage.dart";
@@ -57,7 +60,6 @@ void _setupTextControllerListener(){
     if(existingLog != null){
       return existingLog;
     }
-    debugPrint("test");
     final currentUser = AuthService.firebase().currentUser!;
     final userId = currentUser.id;
     final newLog = await  _logsService.createNewLog(ownerUserId: userId);
@@ -98,10 +100,13 @@ void dispose(){
   @override
   Widget build(BuildContext context) {  
     return Scaffold(backgroundColor:backgroundColour,
-      appBar: AppBar(backgroundColor:backgroundColour,
-        title: const Text("New Log",
-         style: TextStyle(color: Colors.white)) ,
+      appBar: AppBar(backgroundColor:bottomBarColour,
+        
+        title: const Text("New Log",        
+         style: TextStyle(color: textColour)) ,
+
       ),
+      
       body:FutureBuilder(
         future: createOrGetExistingLog(context),
         builder:(context,snapshot) {
@@ -126,6 +131,75 @@ void dispose(){
           }
         },
       ),
+   bottomNavigationBar: BottomAppBar(
+        
+        color: bottomBarColour, // Adjust color as needed
+          child:  Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+            IconButton(
+                onPressed: () {
+                       Navigator.of(context).pushNamedAndRemoveUntil(
+                      logRoute,
+                      (_) => false,
+                    );
+                },
+                icon:const Icon(Icons.home,
+                size: 35,),
+                color: bBariconColor,
+              ),
+            const SizedBox(width:spacing),
+
+               IconButton(
+                onPressed: () {
+                       Navigator.of(context).pushNamedAndRemoveUntil(
+                      logRoute,
+                      (_) => false,
+                    );
+                },
+                icon:const Icon(Icons.share,
+                size: 34,),
+                color: bBariconColor,
+              ),
+
+            const SizedBox(width:spacing),
+
+         PopupMenuButton<MenuAction>(
+
+            onSelected: (value) async {
+              switch (value) {
+                case MenuAction.logout:
+                  final shouldLogout = await showlogOutDialog(context);
+                  if (shouldLogout) {
+                    await AuthService.firebase().logOut();
+                    // ignore: use_build_context_synchronously
+                    await Navigator.of(context).pushNamedAndRemoveUntil(
+                      loginRoute,
+                      (_) => false,
+                    );
+                  }
+              }
+            },
+            itemBuilder: (context) {
+              return [
+                const PopupMenuItem<MenuAction>(
+                  
+                  value: MenuAction.logout,
+                  child: Text("Logout",
+                  style: TextStyle(color: textColour,)),
+                ),
+              ];
+            },
+          color: primaryColour, 
+
+          iconColor: bBariconColor,
+          iconSize: 35,
+          ),
+             
+            ],
+          ),
+        ),
+
     );
   }
 }

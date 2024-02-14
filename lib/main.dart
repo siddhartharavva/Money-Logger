@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:money_logger/services/auth/auth_service.dart';
 import 'package:money_logger/views/home_page.dart';
-//import 'package:money_logger/views/logs/logs_view.dart';
 import 'package:money_logger/views/login_view.dart';
 import 'package:money_logger/views/logs/logs_view.dart';
 import 'package:money_logger/views/logs/create_update_log_view.dart';
-//import 'package:money_logger/views/logs/new_logs_view.dart';
 import 'package:money_logger/views/register_view.dart';
 import 'package:money_logger/views/verify_email_view.dart';
 import 'package:money_logger/constants/routes.dart';
@@ -16,7 +14,6 @@ void main() async {
   runApp( MaterialApp(
       title: 'Money Logger', 
       theme: ThemeData(
-          primarySwatch: Colors.lightBlue,
           fontFamily: 'RobotoRoman'
       ),
       home: const HomePage(),
