@@ -57,7 +57,7 @@ void _setupTextControllerListener(){
     }
     debugPrint("test");
     final currentUser = AuthService.firebase().currentUser!;
-    final email = currentUser.email!;
+    final email = currentUser.email;
     final owner = await _logsService.getUser(email: email);
     final newLog = await  _logsService.createLog(owner: owner);
     _log = newLog;

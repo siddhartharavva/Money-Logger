@@ -22,7 +22,7 @@ class LogsView extends StatefulWidget {
 class _LogsViewState extends State<LogsView> {
   late final LogsService _logsService;
   
-  String get userEmail => AuthService.firebase().currentUser?.email ?? '';
+  String get userEmail => AuthService.firebase().currentUser!.email;
 
 
 
