@@ -101,7 +101,60 @@ void dispose(){
   Widget build(BuildContext context) {  
     return Scaffold(backgroundColor:backgroundColour,
       appBar: AppBar(backgroundColor:bottomBarColour,
-        
+        leading: IconButton(
+          icon:const Icon(
+            Icons.arrow_back,
+              color: iconColor, // Change the color of the back button
+            ),
+    onPressed: () {
+           Navigator.of(context).pushNamedAndRemoveUntil(
+                      logRoute,
+                      (_) => false,
+                    );
+    },
+  ),
+        actions: [
+          IconButton(onPressed: (){
+
+          },
+          icon: const Icon(Icons.share,
+          color: iconColor,),
+          
+          
+          ),
+         PopupMenuButton<MenuAction>(
+
+            onSelected: (value) async {
+              switch (value) {
+                case MenuAction.logout:
+                  final shouldLogout = await showlogOutDialog(context);
+                  if (shouldLogout) {
+                    await AuthService.firebase().logOut();
+                    // ignore: use_build_context_synchronously
+                    await Navigator.of(context).pushNamedAndRemoveUntil(
+                      loginRoute,
+                      (_) => false,
+                    );
+                  }
+              }
+            },
+            itemBuilder: (context) {
+              return [
+                const PopupMenuItem<MenuAction>(
+                  
+                  value: MenuAction.logout,
+                  child: Text("Logout",
+                  style: TextStyle(color: textColour,)),
+                ),
+              ];
+            },
+          color: primaryColour, 
+
+          iconColor: iconColor,
+          iconSize: 35,
+          ),
+             
+        ],
         title: const Text("New Log",        
          style: TextStyle(color: textColour)) ,
 
@@ -131,74 +184,6 @@ void dispose(){
           }
         },
       ),
-   bottomNavigationBar: BottomAppBar(
-        
-        color: bottomBarColour, // Adjust color as needed
-          child:  Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-            IconButton(
-                onPressed: () {
-                       Navigator.of(context).pushNamedAndRemoveUntil(
-                      logRoute,
-                      (_) => false,
-                    );
-                },
-                icon:const Icon(Icons.home,
-                size: 35,),
-                color: bBariconColor,
-              ),
-            const SizedBox(width:spacing),
-
-               IconButton(
-                onPressed: () {
-                       Navigator.of(context).pushNamedAndRemoveUntil(
-                      logRoute,
-                      (_) => false,
-                    );
-                },
-                icon:const Icon(Icons.share,
-                size: 34,),
-                color: bBariconColor,
-              ),
-
-            const SizedBox(width:spacing),
-
-         PopupMenuButton<MenuAction>(
-
-            onSelected: (value) async {
-              switch (value) {
-                case MenuAction.logout:
-                  final shouldLogout = await showlogOutDialog(context);
-                  if (shouldLogout) {
-                    await AuthService.firebase().logOut();
-                    // ignore: use_build_context_synchronously
-                    await Navigator.of(context).pushNamedAndRemoveUntil(
-                      loginRoute,
-                      (_) => false,
-                    );
-                  }
-              }
-            },
-            itemBuilder: (context) {
-              return [
-                const PopupMenuItem<MenuAction>(
-                  
-                  value: MenuAction.logout,
-                  child: Text("Logout",
-                  style: TextStyle(color: textColour,)),
-                ),
-              ];
-            },
-          color: primaryColour, 
-
-          iconColor: bBariconColor,
-          iconSize: 35,
-          ),
-             
-            ],
-          ),
-        ),
 
     );
   }

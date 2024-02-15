@@ -46,99 +46,8 @@ class _LogsViewState extends State<LogsView> {
           "Your logs",
           style: TextStyle(color: textColour),
         ),
-   
-      ),
-      body: StreamBuilder(
-              stream:_logsService.allLogs(ownerUserId: userId), 
-              builder: (context,snapshot){
-                switch(snapshot.connectionState){
-                  case ConnectionState.waiting:
-                  case ConnectionState.active:
-                    if(snapshot.hasData){
-                      final allLogs = snapshot.data as Iterable<CloudLog>;                 
-                      return LogsListView(
-                        logs: allLogs, 
-                        onDeleteLog: (log) async{
-                          await _logsService.deleteLog(documentId: log.documentId);
-                        },
-                        onTap: (log) async {
-                         Navigator.of(context).pushNamedAndRemoveUntil(
-                          createOrUpdateLogRoute,
-                          (route) => false,
-                          arguments: log,
-
-                          
-                        );
-
-                        },
-                        );
-                  
-
-                    }else{
-                      return const CircularProgressIndicator();
-                    }                   
-                  default:
-                    return const CircularProgressIndicator();
-                  }
-              }    
-           ),
-    floatingActionButton: 
-    SizedBox(
-      width:150,
-      height: 50,
-      child: FloatingActionButton(
-        onPressed: () {
-           Navigator.of(context).pushNamedAndRemoveUntil(
-                        createOrUpdateLogRoute,
-                        (route) => false,
-                      );
-        },
-        shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4), // Border radius
-        ),
-        backgroundColor: primaryColour,
-        child: const Text("+ADD NEW LOG",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 20,
-            color: textColour,
-            ),
-           ), // Set the background color of the button
-          ),
-    ),
+   actions: [
     
-  floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-
-  bottomNavigationBar: BottomAppBar(
-        
-        color: bottomBarColour, // Adjust color as needed
-          child:  Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-
-              const Icon(Icons.home,
-                size: 35,
-                color: unhighlightedbBariconColor,),
-
-
-              const SizedBox(width:spacing+10),
-             
-             
-             
-              IconButton(
-                onPressed: () {
-                  // Add action for right icon
-                },
-                icon: const Icon(Icons.bar_chart,
-                size: 37,
-                color: bBariconColor,
-                ),
-                
-              ),
-            
-            
-            const SizedBox(width:spacing),
-
          PopupMenuButton<MenuAction>(
 
             onSelected: (value) async {
@@ -167,14 +76,132 @@ class _LogsViewState extends State<LogsView> {
             },
           color: primaryColour, 
 
-          iconColor: bBariconColor,
+          iconColor: iconColor,
           iconSize: 35,
           ),
              
+   ],
+      ),
+      body: StreamBuilder(
+              stream:_logsService.allLogs(ownerUserId: userId), 
+              builder: (context,snapshot){
+                switch(snapshot.connectionState){
+                  case ConnectionState.waiting:
+                  case ConnectionState.active:
+                    if(snapshot.hasData){
+                      final allLogs = snapshot.data as Iterable<CloudLog>;                 
+                      return LogsListView(
+                        logs: allLogs, 
+                        onDeleteLog: (log) async{
+                          await _logsService.deleteLog(documentId: log.documentId);
+                        },
+                        onTap: (log) async {
+                         Navigator.of(context).pushNamed(
+                          createOrUpdateLogRoute,
+                          arguments: log,
+
+                          
+                        );
+
+                        },
+                        );
+                  
+
+                    }else{
+                      return const CircularProgressIndicator();
+                    }                   
+                  default:
+                    return const CircularProgressIndicator();
+                  }
+              }    
+           ),
+    floatingActionButton: 
+    SizedBox(
+      width:150,
+      height: 50,
+      child: FloatingActionButton(
+        onPressed: () {
+           Navigator.of(context).pushNamed(
+                        createOrUpdateLogRoute,
+                      );
+        },
+        shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4), // Border radius
+        ),
+        backgroundColor: primaryColour,
+        child: const Text("+ADD NEW LOG",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20,
+            color: textColour,
+            ),
+           ), // Set the background color of the button
+          ),
+    ),
+    
+  floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+
+  bottomNavigationBar: SizedBox(
+        height: 90, // Set the width to match the screen width
+
+    child: BottomAppBar(
+          
+          color: bottomBarColour, // Adjust color as needed
+            child:  Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+             children: [
+           const   Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+           children: [
+                Icon(Icons.home,
+                size: 30,
+              color: unhighlightedbBariconColor,
+              ),
+            
+              SizedBox(height: 7) , // Add space between icon and text
+
+/*              Text(
+                'Home',
+                style:  TextStyle(
+                  color: unhighlightedTextColour,
+                ),
+              ),*/
             ],
           ),
-    
-      ),
+                const SizedBox(width:spacing),
+               
+                Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+
+            children: [
+                IconButton(
+                  onPressed: () {
+                    // Add action for right icon
+                  },
+                  icon: const Icon(Icons.bar_chart,
+                  size: 30,
+                  color: bBariconColor,
+                  ),
+                  
+                ),
+
+     /*         const Text(
+                'Stats',
+                style:  TextStyle(
+                  color: textColour,
+                ),
+              ),*/
+            ],
+          ),
+               
+
+              
+              
+              ],
+            ),
+      
+        ),
+  ),
 
     );
     
