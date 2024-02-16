@@ -1,5 +1,14 @@
+import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:money_logger/constants/colour_values.dart';
 import 'package:money_logger/services/auth/auth_service.dart';
+import 'package:money_logger/services/auth/auth_user.dart';
+import 'package:money_logger/services/auth/bloc/auth_bloc.dart';
+import 'package:money_logger/services/auth/bloc/auth_event.dart';
+import 'package:money_logger/services/auth/bloc/auth_state.dart';
+import 'package:money_logger/services/auth/firebase_auth_provider.dart';
 import 'package:money_logger/views/home_page.dart';
 import 'package:money_logger/views/login_view.dart';
 import 'package:money_logger/views/logs/logs_view.dart';
@@ -9,26 +18,25 @@ import 'package:money_logger/views/verify_email_view.dart';
 import 'package:money_logger/constants/routes.dart';
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
-  runApp( MaterialApp(
-      title: 'Money Logger', 
-      theme: ThemeData(
-          fontFamily: 'RobotoRoman'
+  runApp(
+    MaterialApp(
+      title: 'Money Logger',
+      theme: ThemeData(fontFamily: 'RobotoRoman'),
+      home: BlocProvider<AuthBloc>(
+        create: (context) => AuthBloc(FirebaseAuthProvider()),
+        child: const HomePage(),
       ),
-      home: const HomePage(),
       routes: {
-        loginRoute : (context)=> const LoginView(),
-        registerRoute : (context) => const RegisterView(),
-        homeRoute : (context) => const HomePage(),
-        logRoute : (context) => const LogsView(),
-        verifyEmailRoute : (context) => const VerifyEmailView(),
+        loginRoute: (context) => const LoginView(),
+        registerRoute: (context) => const RegisterView(),
+        homeRoute: (context) => const HomePage(),
+        logRoute: (context) => const LogsView(),
+        verifyEmailRoute: (context) => const VerifyEmailView(),
         createOrUpdateLogRoute: (context) => const CreateUpdateLogView(),
       },
-
-
     ),
-  ); 
+  );
 }
 
 class HomePage extends StatelessWidget {
@@ -36,31 +44,22 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future:  AuthService.firebase().initialize(),
-         
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {             
-  
-            case ConnectionState.done:
-             final user = AuthService.firebase().currentUser;
-             
-             if(user != null){
-              
-              if(user.isEmailVerified ){
-                return const LogsView();
-              }else{
-                return const VerifyEmailView();
-              }
-             }else{
+    context.read<AuthBloc>().add(const AuthEventInitialize());
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state){
+      if(state is AuthStateLoggedIn){
+        return const LogsView();
+      }else if (state is AuthStateNeedsVerification){
+        return const VerifyEmailView();
+      }else if (state is AuthStateLoggedOut){
+        return const LoginView();
+      }else {
+        return const Scaffold(
+          body:CircularProgressIndicator(),
+        );
+      }
+    },);
 
-                return const LoginView();            
-                
-             }             
-            default:
-              return const HomeView();
-          }
-        },
-      );
+
   }
 }

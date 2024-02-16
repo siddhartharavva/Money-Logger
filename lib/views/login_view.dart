@@ -1,11 +1,12 @@
 // ignore_for_file: unnecessary_import, use_build_context_synchronously
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_logger/constants/colour_values.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:money_logger/constants/routes.dart';
 import 'package:money_logger/services/auth/auth_exceptions.dart';
-import 'package:money_logger/services/auth/auth_service.dart';
+import 'package:money_logger/services/auth/bloc/auth_bloc.dart';
+import 'package:money_logger/services/auth/bloc/auth_event.dart';
 import 'package:money_logger/utilities/dialogs/error_dialog.dart';
 
 
@@ -138,26 +139,11 @@ late final TextEditingController _email;
                   final email = _email.text;
                   final password = _password.text;
                  try{
-                    await AuthService.firebase().logIn(
-                      email: email, 
-                      password: password,
-                    );
-                 
-                    final user = AuthService.firebase().currentUser;
-                    if(user?.isEmailVerified??false){
-                         Navigator.of(context).pushNamedAndRemoveUntil(
-                        logRoute,
-                        (route) => false,
-                      );
-
-                    }else{
-                      showErrorDialog(context, "Verify Your email");
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                        verifyEmailRoute,
-                        (route) => false,
-                      );
-
-                    }
+                   context.read<AuthBloc>().add(
+                    AuthEventLogIn(
+                      email, 
+                      password,
+                    ));
 
                 }on UserNotFoundException{
                     await showErrorDialog(

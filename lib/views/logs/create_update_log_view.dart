@@ -8,6 +8,8 @@ import 'package:money_logger/utilities/dialogs/logout_dialog.dart';
 import 'package:money_logger/utilities/generics/get_arguments.dart';
 import "package:money_logger/services/cloud/cloud_note.dart";
 import "package:money_logger/services/cloud/firebase_cloud_storage.dart";
+import "package:money_logger/utilities/dialogs/cannot_share_empty_log_dialog.dart";
+import 'package:share_plus/share_plus.dart';
 
 class CreateUpdateLogView extends StatefulWidget {
   const CreateUpdateLogView({super.key});
@@ -114,8 +116,13 @@ void dispose(){
     },
   ),
         actions: [
-          IconButton(onPressed: (){
-
+          IconButton(onPressed: () async {
+            final text = _textController.text;
+            if(_log == null || text.isEmpty){
+              await showCannotShareEmptyLogDialog(context);
+            }else{
+              Share.share(text);
+            }
           },
           icon: const Icon(Icons.share,
           color: iconColor,),
