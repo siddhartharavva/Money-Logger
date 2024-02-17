@@ -1,15 +1,9 @@
-import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:money_logger/constants/colour_values.dart';
-import 'package:money_logger/services/auth/auth_service.dart';
-import 'package:money_logger/services/auth/auth_user.dart';
 import 'package:money_logger/services/auth/bloc/auth_bloc.dart';
 import 'package:money_logger/services/auth/bloc/auth_event.dart';
 import 'package:money_logger/services/auth/bloc/auth_state.dart';
 import 'package:money_logger/services/auth/firebase_auth_provider.dart';
-import 'package:money_logger/views/home_page.dart';
 import 'package:money_logger/views/login_view.dart';
 import 'package:money_logger/views/logs/logs_view.dart';
 import 'package:money_logger/views/logs/create_update_log_view.dart';

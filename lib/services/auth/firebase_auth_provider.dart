@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:money_logger/firebase_options.dart';
 import 'package:money_logger/services/auth/auth_user.dart';
 import 'package:money_logger/services/auth/auth_provider.dart';
@@ -73,6 +74,7 @@ class FirebaseAuthProvider implements AuthProvider {
         throw UserNotLoggedInException();
       }
     }on FirebaseAuthException catch(e){
+      debugPrint(e.toString());
       if(e.code =='user-not-found'){
         throw UserNotFoundException();
       }else if(e.code == 'wrong-password'){
