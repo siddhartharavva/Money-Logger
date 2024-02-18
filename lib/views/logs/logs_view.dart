@@ -12,7 +12,10 @@ import 'package:money_logger/services/cloud/firebase_cloud_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
 import 'package:money_logger/utilities/dialogs/logout_dialog.dart';
 import 'package:money_logger/views/logs/logsListView.dart';
-    
+  
+  extension Count<T extends Iterable> on Stream<T> {
+  Stream<int> get getLength => map((event) => event.length);
+}
 
 class LogsView extends StatefulWidget {
   const LogsView({super.key});
@@ -97,15 +100,10 @@ class _LogsViewState extends State<LogsView> {
                         onTap: (log) async {
                          Navigator.of(context).pushNamed(
                           createOrUpdateLogRoute,
-                          arguments: log,
-
-                          
+                          arguments: log,           
                         );
-
-                        },
-                        );
-                  
-
+                      },
+                    );
                     }else{
                       return const CircularProgressIndicator();
                     }                   
@@ -158,13 +156,6 @@ class _LogsViewState extends State<LogsView> {
               ),
             
               SizedBox(height: 7) , // Add space between icon and text
-
-/*              Text(
-                'Home',
-                style:  TextStyle(
-                  color: unhighlightedTextColour,
-                ),
-              ),*/
             ],
           ),
                 const SizedBox(width:spacing),
@@ -184,18 +175,8 @@ class _LogsViewState extends State<LogsView> {
                   
                 ),
 
-     /*         const Text(
-                'Stats',
-                style:  TextStyle(
-                  color: textColour,
-                ),
-              ),*/
             ],
-          ),
-               
-
-              
-              
+          ),   
               ],
             ),
       

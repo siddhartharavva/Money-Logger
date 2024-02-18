@@ -31,29 +31,17 @@ class FirebaseCloudStorage {
   }
 
 
-  Stream<Iterable<CloudLog>> allLogs({required String ownerUserId}) =>
-    logs.snapshots().map((event)=> event.docs
-        .map((doc)=> CloudLog.fromSnapshot(doc))
-        .where((log) => log.ownerUserId == ownerUserId)); 
-
-  Future<Iterable<CloudLog>> getLogs({required String ownerUserId}) async{
-    try{
-      return await logs
-      .where(
-        ownerUserIdFieldName,
-        isEqualTo: ownerUserId 
-      )
-      .get()
-      .then(
-        (value) => value.docs.map(
-        (doc) => CloudLog.fromSnapshot(doc),
-      ),
-    );
-    }catch (e){
-      throw CouldNotCreateLogException();
-    }
+  Stream<Iterable<CloudLog>> allLogs({required String ownerUserId}) {
+  final allLogs = logs
+      .where(ownerUserIdFieldName, isEqualTo: ownerUserId)
+      .snapshots()
+      .map((event)=> event.docs
+          .map((doc)=> CloudLog.fromSnapshot(doc))
+          .where((log)=> log.ownerUserId == ownerUserId));
+    return allLogs;
   }
-  
+
+   
   
   
 Future<CloudLog> createNewLog({required String ownerUserId}) async{
