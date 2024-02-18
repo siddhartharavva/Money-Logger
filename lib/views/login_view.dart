@@ -55,7 +55,7 @@ class _LoginViewState extends State<LoginView> {
           body: Center(
             child: Column(
               children: [
-                const Spacer(flex: 14),
+                const Spacer(flex: 65),
                 const Text(
                   'Login',
                   textAlign: TextAlign.center,
@@ -65,7 +65,7 @@ class _LoginViewState extends State<LoginView> {
                     color: textColour,
                   ),
                 ),
-                const Spacer(flex: 2),
+                const Spacer(flex: 9),
                 const SizedBox(
                   width: 246.21,
                   height: 48,
@@ -79,7 +79,7 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                 ),
-                const Spacer(flex: 10),
+                const Spacer(flex: 47),
                 SizedBox(
                   width: 352,
                   height: 56,
@@ -105,7 +105,7 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                 ),
-                const Spacer(flex: 4),
+                const Spacer(flex: 18),
                 SizedBox(
                   width: 352,
                   height: 56,
@@ -132,7 +132,7 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                 ),
-                const Spacer(flex: 4),
+                const Spacer(flex: 19),
                 SizedBox(
                   height: 48,
                   width: 352,
@@ -163,11 +163,9 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                 ),
-                 const Spacer(flex: 1),                
+                const Spacer(flex: 4),                
                 TextButton(
                   onPressed: () {
-                      final email = _email.text;
-                      final password = _password.text;
                    context.read<AuthBloc>().add(
                         const AuthEventForgotPassword(),
                       );
@@ -177,15 +175,16 @@ class _LoginViewState extends State<LoginView> {
                     style: TextStyle(color: unhighlightedTextColour),
                   ),
                 ),
-                 const Spacer(flex: 100),
-
+                const Spacer(flex: 400),
                 TextButton(
                   onPressed: () {
+
                       final email = _email.text;
                       final password = _password.text;
                    context.read<AuthBloc>().add(
                          AuthEventRegister(email,password),
                       );
+
                   },
                   child: const Text(
                     "Not registered yet?..Register here",

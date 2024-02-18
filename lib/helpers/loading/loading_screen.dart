@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:money_logger/constants/colour_values.dart';
 import 'package:money_logger/helpers/loading/loading_screen_controller.dart';
 
 class LoadingScreen {
@@ -56,8 +57,9 @@ void hide(){
 
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10.0),
+              color:primaryColour,
+
+              borderRadius: BorderRadius.circular(4.0),
               
               ),
               child: Padding(
@@ -77,6 +79,9 @@ void hide(){
                         return Text(
                           snapshot.data as String,
                           textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color:textColour,
+                          ),
                         );
                       }else{
                         return Container();

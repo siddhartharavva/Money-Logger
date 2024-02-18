@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:money_logger/constants/colour_values.dart';
 import 'package:money_logger/helpers/loading/loading_screen.dart';
 import 'package:money_logger/services/auth/bloc/auth_bloc.dart';
 import 'package:money_logger/services/auth/bloc/auth_event.dart';
@@ -13,6 +15,8 @@ import 'package:money_logger/views/register_view.dart';
 import 'package:money_logger/views/verify_email_view.dart';
 import 'package:money_logger/constants/routes.dart';
 
+import 'package:flutter_svg/flutter_svg.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
@@ -24,8 +28,6 @@ void main() async {
         child: const HomePage(),
       ),
       routes: {
-
-
         logRoute: (context) => const LogsView(),
         createOrUpdateLogRoute: (context) => const CreateUpdateLogView(),
               },
@@ -62,8 +64,12 @@ class HomePage extends StatelessWidget {
       } else if(state is AuthStateRegistering) {
         return const RegisterView();
       }else{
-        return const Scaffold(
-          body:CircularProgressIndicator(),
+        return Scaffold(
+          backgroundColor: backgroundColour,
+          body:Center(
+            child: SvgPicture.asset('assets/icons/Logo.svg'),
+          )
+
         );
       }
     },);

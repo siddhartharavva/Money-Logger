@@ -92,7 +92,7 @@ class _RegisterViewState extends State<RegisterView> {
                   style: const TextStyle(color: textColour),
                   controller: _email,
                   autocorrect: false,
-                  autofocus: true,
+                 // autofocus: true,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     focusedBorder: const OutlineInputBorder(
