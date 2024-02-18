@@ -3,8 +3,10 @@
 import 'package:money_logger/constants/colour_values.dart';
 
 import 'package:flutter/material.dart';
-import 'package:money_logger/constants/routes.dart';
-import 'package:money_logger/services/auth/auth_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:money_logger/services/auth/bloc/auth_bloc.dart';
+import 'package:money_logger/services/auth/bloc/auth_event.dart';
 
 class VerifyEmailView extends StatefulWidget {
   const VerifyEmailView({super.key});
@@ -60,8 +62,9 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                    )           
               ),
                   onPressed: () async {
-                  AuthService.firebase().sendEmailVerification();
-                  
+                    context.read<AuthBloc>().add(
+                      const AuthEventSendEmailVerification(),
+                    );
                 }, 
                 child: const Text("Resend Verification email",
                   style: TextStyle(
@@ -90,10 +93,9 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                    )           
               ),
                   onPressed: () {
-                     Navigator.of(context).pushNamedAndRemoveUntil(
-                      loginRoute,
-                    (route) => false,
-                  );
+                      context.read<AuthBloc>().add(
+                      const AuthEventLogOut(),
+                    );
                 }, 
                 child: const Text("Re-enter the details to login",
                 style: TextStyle(
@@ -111,12 +113,10 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                 height:48,              
               child: TextButton(
               
-                  onPressed: () async {
-                     await AuthService.firebase().logOut();
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                      registerRoute,
-                      (route) => false,
-                     );
+                  onPressed: () {
+                      context.read<AuthBloc>().add(
+                      const AuthEventLogOut(),
+                    );
                 }, 
                 child: const Text("Made an error in creating an account? Restart here.",
                 style: TextStyle(color: unhighlightedTextColour), 

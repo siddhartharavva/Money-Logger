@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:money_logger/helpers/loading/loading_screen.dart';
 import 'package:money_logger/services/auth/bloc/auth_bloc.dart';
 import 'package:money_logger/services/auth/bloc/auth_event.dart';
 import 'package:money_logger/services/auth/bloc/auth_state.dart';
 import 'package:money_logger/services/auth/firebase_auth_provider.dart';
+import 'package:money_logger/views/forgot_password_view.dart';
 import 'package:money_logger/views/login_view.dart';
 import 'package:money_logger/views/logs/logs_view.dart';
 import 'package:money_logger/views/logs/create_update_log_view.dart';
@@ -22,13 +24,11 @@ void main() async {
         child: const HomePage(),
       ),
       routes: {
-        loginRoute: (context) => const LoginView(),
-        registerRoute: (context) => const RegisterView(),
-        homeRoute: (context) => const HomePage(),
+
+
         logRoute: (context) => const LogsView(),
-        verifyEmailRoute: (context) => const VerifyEmailView(),
         createOrUpdateLogRoute: (context) => const CreateUpdateLogView(),
-      },
+              },
     ),
   );
 }
@@ -39,7 +39,17 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<AuthBloc>().add(const AuthEventInitialize());
-    return BlocBuilder<AuthBloc, AuthState>(
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state){
+        if(state.isLoading){
+          LoadingScreen().show(
+            context: context,
+            text:state.loadingText ?? 'please wait a moment',
+            );
+        }else{
+          LoadingScreen().hide();
+        }
+      },
       builder: (context, state){
       if(state is AuthStateLoggedIn){
         return const LogsView();
@@ -47,7 +57,11 @@ class HomePage extends StatelessWidget {
         return const VerifyEmailView();
       }else if (state is AuthStateLoggedOut){
         return const LoginView();
-      }else {
+      }else if (state is AuthStateForgotPassword){
+        return const ForgotPasswordView();
+      } else if(state is AuthStateRegistering) {
+        return const RegisterView();
+      }else{
         return const Scaffold(
           body:CircularProgressIndicator(),
         );

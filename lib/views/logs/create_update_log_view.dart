@@ -1,9 +1,14 @@
 
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_logger/constants/colour_values.dart';
 import 'package:money_logger/constants/routes.dart';
 import 'package:money_logger/enums/menu_action.dart';
 import 'package:money_logger/services/auth/auth_service.dart';
+import 'package:money_logger/services/auth/bloc/auth_bloc.dart';
+import 'package:money_logger/services/auth/bloc/auth_event.dart';
 import 'package:money_logger/utilities/dialogs/logout_dialog.dart';
 import 'package:money_logger/utilities/generics/get_arguments.dart';
 import "package:money_logger/services/cloud/cloud_note.dart";
@@ -136,11 +141,8 @@ void dispose(){
                 case MenuAction.logout:
                   final shouldLogout = await showlogOutDialog(context);
                   if (shouldLogout) {
-                    await AuthService.firebase().logOut();
-                    // ignore: use_build_context_synchronously
-                    await Navigator.of(context).pushNamedAndRemoveUntil(
-                      loginRoute,
-                      (_) => false,
+                     context.read<AuthBloc>().add(
+                      const AuthEventLogOut(),
                     );
                   }
               }
