@@ -14,11 +14,12 @@ import 'package:money_logger/utilities/generics/get_arguments.dart';
 import "package:money_logger/services/cloud/cloud_note.dart";
 import "package:money_logger/services/cloud/firebase_cloud_storage.dart";
 import "package:money_logger/utilities/dialogs/cannot_share_empty_log_dialog.dart";
+import 'package:money_logger/views/logs/dateTextField.dart';
 import 'package:share_plus/share_plus.dart';
 
 class CreateUpdateLogView extends StatefulWidget {
   const CreateUpdateLogView({super.key});
-
+  
   @override
   State<CreateUpdateLogView> createState() => _CreateUpdateLogViewState();
 }
@@ -28,10 +29,12 @@ class _CreateUpdateLogViewState extends State<CreateUpdateLogView> {
   late final  FirebaseCloudStorage _logsService;
   late final TextEditingController _textController;
 
+  late var textBoxHighlight=unhighlightedTextColour;
 @override
 void initState(){
   _logsService = FirebaseCloudStorage();
   _textController = TextEditingController();
+
   super.initState();
 }
 
@@ -107,7 +110,8 @@ void dispose(){
   @override
   Widget build(BuildContext context) {  
     return Scaffold(backgroundColor:backgroundColour,
-      appBar: AppBar(backgroundColor:bottomBarColour,
+      appBar: AppBar(title: DatePickerWidget(),
+        backgroundColor:bottomBarColour,
         leading: IconButton(
           icon:const Icon(
             Icons.arrow_back,
@@ -164,8 +168,6 @@ void dispose(){
           ),
              
         ],
-        title: const Text("New Log",        
-         style: TextStyle(color: textColour)) ,
 
       ),
       
@@ -176,24 +178,193 @@ void dispose(){
            
             case ConnectionState.done:
               _setupTextControllerListener();
-              return TextField(
-                style: const TextStyle(
-                  color: textColour,
-                ),
-                controller: _textController,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                decoration: const InputDecoration(
-                  hintText: 'start typing text here...',
-                  hintStyle: TextStyle(color: unhighlightedTextColour),
-                ),
-              );
+              return  SizedBox(
+                  
+                  height: 56,
+                  child: Column(
+
+                    children: [     
+                    const Spacer(flex: 10),
+
+                      Row(
+                        children: [
+                          const Spacer(flex: 3),
+                          SizedBox(
+                            width: 272,
+                            height: 56,
+                            child: TextField(
+                              style: const TextStyle(color: textColour),
+                              controller: _textController,
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: textBoxHighlight,
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: textColour),
+                                ),
+                                hintText: 'start typing text here...',
+                                border: OutlineInputBorder(
+                                  borderSide:
+                                      const BorderSide(color: textColour),
+                                  
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                hintStyle: const TextStyle(
+                                  fontFamily: 'RobotoRoman',
+                                  color: unhighlightedTextColour,
+                                ),
+                              ),
+                            ),
+                          ),
+                            SizedBox(
+                            width: 56,
+                            height: 56,                          
+                              child: TextField(                              
+                              style: const TextStyle(color: textColour),
+                              keyboardType:const TextInputType.numberWithOptions(decimal: true),
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: textBoxHighlight,
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: textColour),
+                                ),
+                                hintText: '₹',
+                                border: OutlineInputBorder(
+                                  borderSide:
+                                      const BorderSide(color: unhighlightedTextColour),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                hintStyle: const TextStyle(
+                                  fontFamily: 'RobotoRoman',
+                                  color: unhighlightedTextColour,
+                                ),
+                              ),
+                              ),
+                            ),
+                          
+                        
+                        IconButton(
+                    onPressed: () async {            
+
+                    },
+                    icon: const Icon(
+                      Icons.delete, 
+                      color: iconColor,
+                      )                
+                    ),
+                      const Spacer(flex: 3),
+
+                        ], 
+                      ),
+                    const Spacer(flex: 3),
+
+                    ],
+                  ),
+                );
             default:
               return const CircularProgressIndicator();
           }
         },
       ),
-
+ 
+ floatingActionButton: 
+    const Row(
+    /*  mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Spacer(flex:10),
+        SizedBox(
+          width:95,
+          height: 50,
+          child: FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                textBoxHighlight = groceriescolor;
+               });
+            },
+            shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4), // Border radius
+            ),
+            backgroundColor: groceriescolor,
+            child: const Text("Groceries",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                color: textColour,
+                ),
+               ), // Set the background color of the button
+              ),
+        ),
+        const Spacer(flex:10),
+        SizedBox(
+          width:95,
+          height: 50,
+          child: FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                textBoxHighlight = travelcolor;
+               });            },
+            shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4), // Border radius
+            ),
+            backgroundColor: travelcolor,
+            child: const Text("Travel",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                color: textColour,
+                ),
+               ), // Set the background color of the button
+              ),
+        ),
+        const Spacer(flex:10),
+        SizedBox(
+          width:95,
+          height: 50,
+          child: FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                textBoxHighlight = foodcolor;
+               });              debugPrint(textBoxHighlight.toString());
+            },
+            shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4), // Border radius
+            ),
+            backgroundColor: foodcolor,
+            child: const Text("Food",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                color: textColour,
+                ),
+               ), // Set the background color of the button
+              ),
+        ),
+        const Spacer(flex:10),
+          SizedBox(
+          width:95,
+          height: 50,
+          child: FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                textBoxHighlight = misccolor;
+               });            },
+            shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4), // Border radius
+            ),
+            backgroundColor: misccolor,
+            child: const Text("Misc",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                color: textColour,
+                ),
+               ), // Set the background color of the button
+              ),
+        ),
+        const Spacer(flex:10),
+      ],*/
+    ),
+    
+  floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

@@ -1,2 +1,5 @@
 const ownerUserIdFieldName = 'user_id';  
-const textFieldName = 'text';
+const date ='date';
+const itemCost = 'itemCost';
+const itemName ='itemName';
+const itemTag ='itemTag';

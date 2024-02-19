@@ -95,7 +95,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                       focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: textColour),
                       ),
-                      hintText: "Yout email address",
+                      hintText: "Your email address",
                       border: OutlineInputBorder(
                         borderSide:
                             const BorderSide(color: unhighlightedTextColour),
