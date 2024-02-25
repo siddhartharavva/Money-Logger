@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:money_logger/constants/colour_values.dart';
+import 'package:money_logger/constants/constant_values.dart';
 
 typedef DialogOptionBuilder<T> = Map<String ,T?> Function();
 Future<T?> showGenericDialog<T>({

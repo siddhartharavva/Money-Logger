@@ -1,12 +1,12 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:money_logger/services/cloud/cloud_note.dart';
+import 'package:money_logger/services/cloud/cloud_log.dart';
 import 'package:money_logger/services/cloud/cloud_storage_constants.dart';
 import 'package:money_logger/services/cloud/cloud_storage_exceptions.dart';
 
 class FirebaseCloudStorage {
 
-  final logs = FirebaseFirestore.instance.collection("List");
+  final logs = FirebaseFirestore.instance.collection("logs");
 
   Future<void> updateLog({
     required String documentId,
@@ -47,7 +47,7 @@ class FirebaseCloudStorage {
 Future<CloudLog> createNewLog({required String ownerUserId}) async{
     final document = await logs.add(({
       ownerUserIdFieldName: ownerUserId,
-      textFieldName: '\$index ,test',
+      textFieldName: '',
     }));
     final fetchedLog = await document.get();
     return CloudLog(

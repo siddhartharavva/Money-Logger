@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:money_logger/constants/colour_values.dart';
+import 'package:money_logger/constants/constant_values.dart';
 import 'package:money_logger/helpers/loading/loading_screen.dart';
 import 'package:money_logger/services/auth/bloc/auth_bloc.dart';
 import 'package:money_logger/services/auth/bloc/auth_event.dart';
@@ -8,6 +8,7 @@ import 'package:money_logger/services/auth/bloc/auth_state.dart';
 import 'package:money_logger/services/auth/firebase_auth_provider.dart';
 import 'package:money_logger/views/forgot_password_view.dart';
 import 'package:money_logger/views/login_view.dart';
+import 'package:money_logger/views/logs/LogsAdding.dart';
 import 'package:money_logger/views/logs/logs_view.dart';
 import 'package:money_logger/views/logs/create_update_log_view.dart';
 import 'package:money_logger/views/register_view.dart';
@@ -20,13 +21,20 @@ void main() async {
   runApp(
     MaterialApp(
       title: 'Money Logger',
-      theme: ThemeData(fontFamily: 'RobotoRoman'),
+      theme: ThemeData(fontFamily: 'RobotoRoman',
+      primaryIconTheme:const IconThemeData(
+       color:iconColor , 
+      ),
+      iconTheme:const IconThemeData(color: iconColor,
+      ),
+      ),
       home: BlocProvider<AuthBloc>(
         create: (context) => AuthBloc(FirebaseAuthProvider()),
         child: const HomePage(),
       ),
       routes: {
         logRoute: (context) => const LogsView(),
+        updatedlogRoute: (context) => const UpdateOrCreateLogs(),
         createOrUpdateLogRoute: (context) => const CreateUpdateLogView(),
               },
     ),

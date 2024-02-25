@@ -2,7 +2,12 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:money_logger/constants/constant_values.dart';
-
+import 'package:money_logger/services/auth/auth_service.dart';
+import 'package:money_logger/utilities/generics/get_arguments.dart';
+import "package:money_logger/services/cloud/cloud_log.dart";
+import "package:money_logger/services/cloud/firebase_cloud_storage.dart";
+import "package:money_logger/utilities/dialogs/cannot_share_empty_log_dialog.dart";
+import 'package:share_plus/share_plus.dart';
 
 class CreateUpdateLogView extends StatefulWidget {
   const CreateUpdateLogView({super.key});
@@ -12,7 +17,9 @@ class CreateUpdateLogView extends StatefulWidget {
 }
 
 class _CreateUpdateLogViewState extends State<CreateUpdateLogView> {
-
+  CloudLog? _log;
+    late DateTime _selectedDate;
+          late String formattedDateTime = _selectedDate.toString();
           
 Widget _buildIcon() {
   return Icon(
@@ -21,17 +28,86 @@ Widget _buildIcon() {
       size:20,
     );
 }
+  late final  FirebaseCloudStorage _logsService;
   late final TextEditingController _textController;
 
   late var iconshape=Icons.fastfood_rounded;
 @override
 void initState(){
-  _textController = TextEditingController();
+  _logsService = FirebaseCloudStorage();
+    _selectedDate = DateTime.now();
+
+  _textController = TextEditingController(text: formattedDateTime);
+
   super.initState();
 }
 
+void _textControllerListener() async {
+  final log = _log;
+  if(log == null){
+    return;
+  }
+  final text = _textController.text;
+  await _logsService.updateLog(
+        documentId: log.documentId, 
+        text: text,
+      );
+}
+
+void _setupTextControllerListener(){
+  
+  _textController.removeListener(_textControllerListener);
+  _textController.addListener(_textControllerListener);
+
+}
+void _deleteLogifTextIsEmpty() {
+
+final log = _log;
+if (_textController.text.isEmpty && log!= null) {
+  _logsService.deleteLog(documentId: log.documentId);
+  }
+}
+
+  
+  Future<CloudLog> createOrGetExistingLog(BuildContext context) async {
+    
+    final widgetLog = context.getArgument<CloudLog>();
+
+    if(widgetLog != null)    {
+      _log = widgetLog;
+      _textController.text = widgetLog.text;
+      return widgetLog;
+    }
+    final existingLog = _log;
+    if(existingLog != null){
+      return existingLog;
+    }
+    final currentUser = AuthService.firebase().currentUser!;
+    final userId = currentUser.id;
+    final newLog = await  _logsService.createNewLog(ownerUserId: userId);
+    _log = newLog;
+    return newLog;
+  }
+
+
+
+   void _saveLogIfTextNotEmpty() async{
+    final log = _log;
+    final text = _textController.text;
+    if(log != null && text.isNotEmpty){
+       await _logsService.updateLog(
+        documentId: log.documentId, 
+        text: text,
+      );
+    
+    }
+  }
+
 @override
 void dispose(){
+    _deleteLogifTextIsEmpty();
+
+  _saveLogIfTextNotEmpty();
   _textController.dispose();
   super.dispose();
 }
@@ -39,9 +115,36 @@ void dispose(){
   @override
   Widget build(BuildContext context) {  
     return Scaffold(backgroundColor:backgroundColour,
-      appBar: AppBar(title: ,
+      appBar: AppBar(title: const Text("test"),
         backgroundColor:bottomBarColour,
+        actions: [          
+          IconButton(onPressed: () async {
+            final text = _textController.text;
+            if(_log == null || text.isEmpty){
+              await showCannotShareEmptyLogDialog(context);
+            }else{
+              Share.share(text);
+            }
+          },
+          icon: const Icon(Icons.share,
+          color: iconColor,),
+          
+          ),
+
+             
+        ],
+
       ),
+      
+      body:FutureBuilder(
+        future: createOrGetExistingLog(context),
+        builder:(context,snapshot) {
+          switch(snapshot.connectionState){
+           
+            case ConnectionState.done:
+              _setupTextControllerListener();
+              return Scaffold(                
+                backgroundColor: backgroundColour,
                     body:Padding(                     
                       padding: const EdgeInsets.all(1),
                         child: Column(
@@ -116,8 +219,8 @@ void dispose(){
                             ], 
                             ),
                           ],
-                        ),                  
-                      ),
+                        ),                                        
+                  ),            
           bottomNavigationBar: BottomAppBar(  
           color:bottomBarColour,          
           child: Row(
@@ -270,6 +373,12 @@ void dispose(){
 ),
               );
               
-           
+            default:
+              return const Text("");
           }
-        }
+        },
+      ),
+
+    );
+  }
+}

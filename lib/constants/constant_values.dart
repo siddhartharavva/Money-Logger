@@ -11,7 +11,8 @@ const unhighlightedTextColour = Color.fromRGBO(217, 217, 217, 0.75);
 const bottomBarColour = Color.fromRGBO(0, 0, 0, 1);
 const unhighlightedPrimaryColour = Color.fromRGBO(76, 175, 80, 0.75);
 const double spacing = 0;
-const foodcolor =  Color.fromRGBO(213, 139, 48, 1);
-const travelcolor =  Color.fromRGBO(194, 66, 66, 1);
-const groceriescolor =  Color.fromRGBO(34, 139, 34, 1);
-const misccolor =  Color.fromRGBO(59, 59, 59, 1);
+
+const double tagWidth = 92;
+const double tagFontSize =14;
+var textBoxHighlight=unhighlightedTextColour;
+

@@ -3,7 +3,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:money_logger/constants/colour_values.dart';
+import 'package:money_logger/constants/constant_values.dart';
 import 'package:money_logger/helpers/loading/loading_screen_controller.dart';
 
 class LoadingScreen {

@@ -1,13 +1,13 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:money_logger/constants/colour_values.dart';
+import 'package:money_logger/constants/constant_values.dart';
 import 'package:money_logger/constants/routes.dart';
 import 'package:money_logger/enums/menu_action.dart';
 import 'package:money_logger/services/auth/auth_service.dart';
 import 'package:money_logger/services/auth/bloc/auth_bloc.dart';
 import 'package:money_logger/services/auth/bloc/auth_event.dart';
-import 'package:money_logger/services/cloud/cloud_note.dart';
+import 'package:money_logger/services/cloud/cloud_log.dart';
 import 'package:money_logger/services/cloud/firebase_cloud_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
 import 'package:money_logger/utilities/dialogs/logout_dialog.dart';
@@ -43,10 +43,12 @@ class _LogsViewState extends State<LogsView> {
 
   @override
   Widget build(BuildContext context) {
+    
+
     return Scaffold(
       backgroundColor: backgroundColour,
       appBar: AppBar(
-        backgroundColor: bottomBarColour,
+       backgroundColor: bottomBarColour,
         title: const Text(
           "Your logs",
           style: TextStyle(color: textColour),
@@ -100,7 +102,7 @@ class _LogsViewState extends State<LogsView> {
                         onTap: (log) async {
                          Navigator.of(context).pushNamed(
                           createOrUpdateLogRoute,
-                          arguments: log,           
+                         // arguments: log,           
                         );
                       },
                     );
@@ -139,7 +141,7 @@ class _LogsViewState extends State<LogsView> {
   floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
 
   bottomNavigationBar: SizedBox(
-        height: 75, // Set the width to match the screen width
+        height: 75, 
 
     child: BottomAppBar(
           

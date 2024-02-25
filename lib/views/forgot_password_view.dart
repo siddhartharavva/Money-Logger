@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:money_logger/constants/colour_values.dart';
+import 'package:money_logger/constants/constant_values.dart';
 import 'package:money_logger/services/auth/bloc/auth_bloc.dart';
 import 'package:money_logger/services/auth/bloc/auth_event.dart';
 import 'package:money_logger/services/auth/bloc/auth_state.dart';

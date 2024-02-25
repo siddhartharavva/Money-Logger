@@ -31,8 +31,8 @@ class AuthStateForgotPassword extends AuthState{
 
 }
 
-class AuthStateUnintialized extends AuthState{
-  const AuthStateUnintialized({required bool isLoading}): super(isLoading: isLoading);
+class AuthStateUninitialized extends AuthState{
+  const AuthStateUninitialized({required bool isLoading}): super(isLoading: isLoading);
 }
 
 class AuthStateLoggedIn extends AuthState{

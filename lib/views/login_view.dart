@@ -1,6 +1,6 @@
 // ignore_for_file: unnecessary_import, use_build_context_synchronously
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:money_logger/constants/colour_values.dart';
+import 'package:money_logger/constants/constant_values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:money_logger/services/auth/auth_exceptions.dart';

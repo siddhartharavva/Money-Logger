@@ -2,8 +2,8 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
-import 'package:money_logger/constants/colour_values.dart';
-import 'package:money_logger/services/cloud/cloud_note.dart';
+import 'package:money_logger/constants/constant_values.dart';
+import 'package:money_logger/services/cloud/cloud_log.dart';
 import 'package:money_logger/utilities/dialogs/delete_dialog.dart';
 
 typedef LogCallBack = void Function(CloudLog log);
